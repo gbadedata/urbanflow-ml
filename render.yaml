@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: urbanflow-ml
+    runtime: docker
+    dockerfilePath: ./docker/Dockerfile
+    dockerContext: .
+    plan: free
+    region: frankfurt
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
