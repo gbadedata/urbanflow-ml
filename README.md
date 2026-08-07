@@ -1061,7 +1061,12 @@ database would waste storage that free tier providers do not have.
 
 ### Cloud deployment
 
-`fly.toml` configures scale to zero: no cost while idle, at the price of a cold
+The deployed instance runs on Render's free plan, configured by `render.yaml`,
+with a managed serverless PostgreSQL instance holding the zone registry and
+recent demand history. Both sleep when idle, which is why the first request
+after a quiet period is slow.
+
+`fly.toml` is retained for Fly.io deployment and configures scale to zero: no cost while idle, at the price of a cold
 start on the first request after a quiet period. That trade is deliberate for a
 demonstration service and is stated here rather than hidden.
 
