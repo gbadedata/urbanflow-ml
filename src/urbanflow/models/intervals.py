@@ -1,20 +1,29 @@
-"""Prediction intervals by quantile regression.
+"""Prediction intervals from the fitted count distribution.
 
-Spec §7.3, as corrected. Split conformal prediction assumes exchangeability,
-which a time series violates: the calibration residuals come from a different
-period than the ones being covered, so nominal 90% intervals under-cover in
-practice. Rather than reach for a blocked conformal variant, this fits gradient
-boosters directly on the pinball loss at each quantile — no extra machinery, and
-honest about being empirical rather than guaranteed.
+Spec §7.3, revised after measurement. Three approaches were considered:
 
-Coverage is then *measured* on held-out data rather than assumed. An interval
-that claims 90% and delivers 71% is worse than no interval, because a dispatcher
-plans against it.
+* **Split conformal** — assumes exchangeability, which a time series violates.
+  Rejected before implementation.
+* **Quantile gradient boosting** — implemented, measured, abandoned. With 46% of
+  the grid at zero demand, pinball loss at q=0.05 starts from the pooled 5th
+  percentile (which is 0) and never escapes it: any upward step is charged 0.95
+  against every zero. The result was a lower bound pinned at zero even in zones
+  averaging 100 pickups an hour. Total coverage looked fine — 94.7% against a 90%
+  target — because the interval had silently become one-sided ``[0, p95]``, whose
+  true nominal coverage is 95%. It passed the gate for the wrong reason.
+* **Distribution-based (this module)** — the champion already produces a
+  well-calibrated mean, so intervals follow from the count distribution around
+  it. No second model, and no optimiser that has to cooperate.
 
-Quantile crossing is the one artefact worth handling explicitly. The models are
-fitted independently, so nothing stops the 0.95 model predicting below the 0.05
-model in a sparse zone. Crossed quantiles are sorted back into order rather than
-left to produce a negative-width interval.
+Counts are overdispersed: variance exceeds the mean, because demand is driven by
+factors the features do not capture. Poisson intervals therefore under-cover
+badly at high volume. A negative binomial with a single dispersion parameter
+fixes that, and the parameter is worth reporting in its own right — it
+quantifies how much unexplained variability remains.
+
+Dispersion is fitted on the calibrate block, never on train and never on the
+block where coverage is verified. That is what the calibrate block is for
+(spec §6.2); fitting and verifying on the same rows produces an optimistic curve.
 """
 
 from __future__ import annotations
@@ -24,97 +33,59 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from urbanflow.models.baselines import design_matrix
-
 logger = logging.getLogger(__name__)
 
-#: Nominal interval. 0.05/0.95 gives a 90% central interval.
 LOWER_QUANTILE = 0.05
 UPPER_QUANTILE = 0.95
 NOMINAL_COVERAGE = UPPER_QUANTILE - LOWER_QUANTILE
 
-
-@dataclass
-class QuantileModel:
-    """A pair of boosters bracketing the central interval."""
-
-    lower: object
-    upper: object
-    columns: list[str]
-    lower_quantile: float = LOWER_QUANTILE
-    upper_quantile: float = UPPER_QUANTILE
-
-    @property
-    def nominal_coverage(self) -> float:
-        return self.upper_quantile - self.lower_quantile
-
-    def predict_interval(self, features: dict[str, np.ndarray]) -> tuple[np.ndarray, np.ndarray]:
-        """Return (lower, upper), clipped at zero and sorted into order."""
-        matrix = design_matrix(features, self.columns)
-        low = np.asarray(self.lower.predict(matrix), dtype=np.float64)  # type: ignore[attr-defined]
-        high = np.asarray(self.upper.predict(matrix), dtype=np.float64)  # type: ignore[attr-defined]
-
-        low = np.clip(low, 0.0, None)
-        high = np.clip(high, 0.0, None)
-
-        # Independently fitted quantiles can cross in sparse zones; sorting is
-        # the standard repair and keeps the interval non-negative in width.
-        crossed = low > high
-        if crossed.any():
-            logger.info(
-                "repaired %s crossed quantile pairs (%.3f%%)",
-                f"{crossed.sum():,}",
-                100 * crossed.mean(),
-            )
-            low[crossed], high[crossed] = high[crossed], low[crossed].copy()
-
-        return low, high
+#: Above this the fitted distribution is effectively Poisson, and the negative
+#: binomial parameterisation becomes numerically awkward.
+MAX_DISPERSION = 1e6
 
 
-def fit_quantiles(
-    features: dict[str, np.ndarray],
-    target: np.ndarray,
-    columns: list[str],
-    *,
+def estimate_dispersion(y_true: np.ndarray, mu: np.ndarray) -> float:
+    """Estimate the negative binomial dispersion ``k`` by moment matching.
+
+    The negative binomial has ``Var = mu + mu^2 / k``, so ``k`` follows from the
+    excess of squared residuals over the Poisson variance. Large ``k`` means the
+    data is nearly Poisson; small ``k`` means substantial overdispersion.
+    """
+    mu = np.clip(np.asarray(mu, dtype=np.float64), 1e-9, None)
+    excess = float(np.sum((y_true - mu) ** 2 - mu))
+    if excess <= 0:
+        logger.info("no overdispersion detected; falling back to Poisson intervals")
+        return MAX_DISPERSION
+    k = float(np.sum(mu**2) / excess)
+    return float(np.clip(k, 1e-3, MAX_DISPERSION))
+
+
+def interval_bounds(
+    mu: np.ndarray,
+    dispersion: float,
     lower_quantile: float = LOWER_QUANTILE,
     upper_quantile: float = UPPER_QUANTILE,
-    max_iter: int = 300,
-    random_state: int = 0,
-) -> QuantileModel:
-    """Fit both interval bounds on the training block only."""
-    from sklearn.ensemble import HistGradientBoostingRegressor
+) -> tuple[np.ndarray, np.ndarray]:
+    """Central interval from the count distribution around each predicted mean.
 
-    from urbanflow.models.champion import CATEGORICAL_FEATURES
+    Bounds are integers because the forecast quantity is a count of pickups; a
+    lower bound of 3.7 cabs is not something an operator can act on.
+    """
+    from scipy.stats import nbinom, poisson
 
-    matrix = design_matrix(features, columns)
-    categorical = [c in CATEGORICAL_FEATURES for c in columns]
+    mu = np.clip(np.asarray(mu, dtype=np.float64), 1e-9, None)
 
-    def _fit(quantile: float) -> HistGradientBoostingRegressor:
-        model = HistGradientBoostingRegressor(
-            loss="quantile",
-            quantile=quantile,
-            max_iter=max_iter,
-            learning_rate=0.1,
-            max_leaf_nodes=63,
-            min_samples_leaf=100,
-            l2_regularization=1.0,
-            categorical_features=categorical,
-            early_stopping=True,
-            validation_fraction=0.1,
-            n_iter_no_change=20,
-            random_state=random_state,
-        )
-        model.fit(matrix, target)
-        logger.info("quantile %.2f fitted in %d iterations", quantile, model.n_iter_)
-        return model
+    if dispersion >= MAX_DISPERSION:
+        lower = poisson.ppf(lower_quantile, mu)
+        upper = poisson.ppf(upper_quantile, mu)
+    else:
+        p = dispersion / (dispersion + mu)
+        lower = nbinom.ppf(lower_quantile, dispersion, p)
+        upper = nbinom.ppf(upper_quantile, dispersion, p)
 
-    return QuantileModel(
-        lower=_fit(lower_quantile),
-        upper=_fit(upper_quantile),
-        columns=columns,
-        lower_quantile=lower_quantile,
-        upper_quantile=upper_quantile,
-    )
+    lower = np.clip(np.nan_to_num(np.asarray(lower, dtype=np.float64), nan=0.0), 0.0, None)
+    upper = np.clip(np.nan_to_num(np.asarray(upper, dtype=np.float64), nan=0.0), 0.0, None)
+    return lower, np.maximum(upper, lower)
 
 
 @dataclass(frozen=True)
@@ -155,12 +126,12 @@ def measure_coverage(
     nominal: float = NOMINAL_COVERAGE,
     tier: str = "all",
 ) -> CoverageResult:
-    """Empirical coverage and interval width.
+    """Empirical coverage, interval width, and both tail miss rates.
 
-    Tail misses are reported separately: an interval can hit its nominal
-    coverage while being badly asymmetric, missing almost entirely on one side,
-    which matters operationally because under-supply and over-supply are not
-    equally costly.
+    The tail rates are not decoration. Total coverage alone cannot distinguish a
+    correctly centred interval from a one-sided one that reaches its number by
+    never missing below — the exact failure that let the previous implementation
+    pass its gate while being useless for planning.
     """
     inside = (y_true >= lower) & (y_true <= upper)
     width = upper - lower
@@ -195,40 +166,64 @@ def check_coverage_gate(
     results: list[CoverageResult],
     gated_tiers: list[str],
     tolerance: float = 0.05,
+    tail_tolerance: float = 0.04,
+    lower_quantile: float = LOWER_QUANTILE,
+    upper_quantile: float = UPPER_QUANTILE,
 ) -> tuple[bool, list[str]]:
-    """Spec §8 gate 4: 90% intervals must cover 85-95% on the gated tiers.
+    """Spec §8 gate 4, with a tail check added after the one-sided-interval bug.
 
-    The low tier is reported but not gated. Demand there is mostly zero, so a
-    lower bound of zero covers a large share of observations trivially and the
-    coverage figure says little about the model.
+    Total coverage is necessary but not sufficient. An interval whose lower bound
+    sits at zero never misses below, so it can post 95% coverage while saying
+    nothing about the downside — and minimum-staffing decisions taken against
+    that bound would be badly wrong. Each tail is therefore checked against its
+    own nominal rate.
+
+    The low tier is reported but not gated: demand there is mostly zero, so a
+    zero lower bound is genuinely correct and its tail rate is uninformative.
     """
     reasons: list[str] = []
     passed = True
+    nominal_below = lower_quantile
+    nominal_above = 1.0 - upper_quantile
 
     for result in results:
         if result.tier not in gated_tiers:
             continue
+
         if abs(result.error) > tolerance:
             passed = False
             direction = "under" if result.error < 0 else "over"
             reasons.append(
-                f"{result.tier}: {result.empirical:.1%} empirical coverage against "
-                f"{result.nominal:.0%} nominal — {direction}-covers by "
-                f"{abs(result.error):.1%}, outside the ±{tolerance:.0%} tolerance"
+                f"{result.tier}: {result.empirical:.1%} coverage against "
+                f"{result.nominal:.0%} nominal — {direction}-covers by {abs(result.error):.1%}"
             )
         else:
             reasons.append(f"{result.tier}: {result.empirical:.1%} coverage, within tolerance")
 
+        if abs(result.below_lower - nominal_below) > tail_tolerance:
+            passed = False
+            reasons.append(
+                f"{result.tier}: {result.below_lower:.1%} of actuals fall below the lower "
+                f"bound against {nominal_below:.0%} expected — the interval is not centred "
+                f"and the lower bound is not usable for planning"
+            )
+        if abs(result.above_upper - nominal_above) > tail_tolerance:
+            passed = False
+            reasons.append(
+                f"{result.tier}: {result.above_upper:.1%} of actuals exceed the upper bound "
+                f"against {nominal_above:.0%} expected"
+            )
+
     return passed, reasons
 
 
-def format_coverage(results: list[CoverageResult], horizon: int) -> str:
+def format_coverage(results: list[CoverageResult], horizon: int, dispersion: float) -> str:
     lines = [
-        f"\nhorizon {horizon}h — interval coverage",
-        "-" * 74,
+        f"\nhorizon {horizon}h — interval coverage (dispersion k={dispersion:.2f})",
+        "-" * 78,
         f"{'tier':<9}{'n':>10}{'nominal':>10}{'empirical':>12}"
         f"{'mean width':>12}{'below':>9}{'above':>9}",
-        "-" * 74,
+        "-" * 78,
     ]
     for r in results:
         lines.append(

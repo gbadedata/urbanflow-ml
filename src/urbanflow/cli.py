@@ -37,8 +37,9 @@ from urbanflow.models.evaluate import (
 )
 from urbanflow.models.intervals import (
     check_coverage_gate,
-    fit_quantiles,
+    estimate_dispersion,
     format_coverage,
+    interval_bounds,
     measure_coverage_by_tier,
 )
 from urbanflow.models.split import (
@@ -432,14 +433,22 @@ def baselines_cmd(
 
 @app.command("intervals")
 def intervals_cmd(
-    max_iter: int = typer.Option(300, "--max-iter", help="Boosting iterations per quantile."),
+    max_iter: int = typer.Option(400, "--max-iter", help="Champion boosting iterations."),
     frozen_test: bool = typer.Option(
         False, "--frozen-test", help="Read the FROZEN test block. Spec §6.2: once, at release."
     ),
 ) -> None:
-    """Fit quantile intervals and measure empirical coverage."""
+    """Fit dispersion on calibrate, then measure interval coverage.
+
+    During development the calibrate block is split in half by time: dispersion
+    is fitted on the earlier half and coverage verified on the later one, so the
+    reported figure is never in-sample for the parameter that produced it. At
+    release, dispersion is fitted on the whole calibrate block and coverage is
+    measured once on the frozen test block.
+    """
     import json
 
+    from urbanflow.models.champion import fit_champion
     from urbanflow.models.evaluate import load_block
 
     config = get_config()
@@ -449,14 +458,10 @@ def intervals_cmd(
         typer.echo("no zone registry — run `urbanflow zone-report` first", err=True)
         raise typer.Exit(code=1)
 
-    eval_block = TEST if frozen_test else CALIBRATE
-    if frozen_test:
-        typer.echo("READING THE FROZEN TEST BLOCK. This should happen once, at release.")
-
     zone_tiers = load_zone_tiers(registry)
     summary = json.loads((PROJECT_ROOT / "reports" / "feature_summary.json").read_text())
     con = connect()
-    report: dict[str, object] = {"eval_block": eval_block, "horizons": {}}
+    report: dict[str, object] = {"frozen_test": frozen_test, "horizons": {}}
     all_passed = True
 
     for entry in summary:
@@ -469,15 +474,26 @@ def intervals_cmd(
 
         cols = entry["features"]
         train_x, train_y, _ = load_block(con, "f", "train", cols)
-        eval_x, eval_y, eval_zones = load_block(con, "f", eval_block, cols)
+        typer.echo(f"\nh={horizon}h fitting champion on {len(train_y):,} rows")
+        model = fit_champion(train_x, train_y, cols, max_iter=max_iter)
+
+        cal_x, cal_y, cal_zones = load_block(con, "f", CALIBRATE, cols)
+        cal_mu = model.predict(cal_x)
+
+        if frozen_test:
+            typer.echo("READING THE FROZEN TEST BLOCK. This should happen once, at release.")
+            dispersion = estimate_dispersion(cal_y, cal_mu)
+            eval_x, eval_y, eval_zones = load_block(con, "f", TEST, cols)
+            eval_mu = model.predict(eval_x)
+        else:
+            half = len(cal_y) // 2
+            dispersion = estimate_dispersion(cal_y[:half], cal_mu[:half])
+            eval_y, eval_zones, eval_mu = cal_y[half:], cal_zones[half:], cal_mu[half:]
+
+        lower, upper = interval_bounds(eval_mu, dispersion)
         tiers = np.array([zone_tiers.get(int(z), "low") for z in eval_zones])
-
-        typer.echo(f"\nh={horizon}h fitting quantile models on {len(train_y):,} rows")
-        model = fit_quantiles(train_x, train_y, cols, max_iter=max_iter)
-        lower, upper = model.predict_interval(eval_x)
-
         results = measure_coverage_by_tier(eval_y, lower, upper, tiers)
-        typer.echo(format_coverage(results, horizon))
+        typer.echo(format_coverage(results, horizon, dispersion))
 
         passed, reasons = check_coverage_gate(
             results, config.gates.gated_tiers, config.gates.coverage_tolerance
@@ -488,10 +504,10 @@ def intervals_cmd(
             typer.echo(f"  - {reason}")
 
         report["horizons"][str(horizon)] = {  # type: ignore[index]
+            "dispersion": round(dispersion, 4),
             "coverage": [r.to_dict() for r in results],
             "gate_passed": passed,
             "reasons": reasons,
-            "max_iter": max_iter,
         }
 
     name = "intervals_test.json" if frozen_test else "intervals_calibrate.json"

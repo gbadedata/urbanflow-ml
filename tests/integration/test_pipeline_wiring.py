@@ -141,3 +141,14 @@ def test_intervals_command_wired() -> None:
     source = inspect.getsource(intervals_cmd)
     assert "check_coverage_gate" in source, "coverage gate never applied"
     assert "max_iter=max_iter" in source
+
+
+def test_dispersion_is_not_fitted_and_verified_on_the_same_rows() -> None:
+    """Spec §6.2: calibrating and verifying on identical rows is optimistic."""
+    import inspect
+
+    from urbanflow.cli import intervals_cmd
+
+    source = inspect.getsource(intervals_cmd)
+    assert "half" in source, "calibrate block is not split for dispersion fitting"
+    assert "cal_y[:half]" in source, "dispersion fitted on the verification rows"
