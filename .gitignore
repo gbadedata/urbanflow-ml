@@ -1,0 +1,37 @@
+# Data — never commit raw snapshots or derived corpora
+data/raw/
+data/interim/
+data/processed/
+*.parquet
+*.csv
+!tests/**/*.csv
+
+# Manifests ARE committed — they are the provenance record
+!data/manifests/
+!data/manifests/*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# MLflow / models
+mlruns/
+models/*.pkl
+models/*.joblib
+
+# Env
+.env
+.env.local
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

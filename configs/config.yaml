@@ -1,0 +1,47 @@
+# UrbanFlow ML — project configuration
+#
+# These values are the decisions locked before any modelling code is written
+# (spec v2 §5, §6.2, §2.1). Changing any of them invalidates existing snapshots
+# and trained models, so treat edits as versioned events, not tweaks.
+
+data:
+  # Spec §5.1: window starts 2023-01 to avoid the COVID structural break and the
+  # steepest part of the yellow-taxi secular decline. Verify against a current
+  # TLC snapshot before fixing.
+  start_month: "2023-01"
+  end_month: "2025-06"
+  service: "yellow"
+  raw_dir: "data/raw"
+  manifest_dir: "data/manifests"
+
+zones:
+  # Spec §5.1: not every TLC LocationID is forecastable.
+  #   264 / 265 — "Unknown" / "N/A" placeholder zones
+  #   1         — Newark Airport (EWR), idiosyncratic and near-zero yellow volume
+  #   103,104,105 — Governor's Island / Ellis Island / Liberty Island, negligible volume
+  # Populate and justify this list in the README before the grid is built.
+  excluded_location_ids: [1, 103, 104, 105, 264, 265]
+  lookup_url: "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+
+features:
+  # Spec §2.1: the assumed deployment context is an operator-internal trip feed
+  # with 15 minutes of latency. No feature may use data newer than
+  # (as_of - feature_cutoff_minutes).
+  feature_cutoff_minutes: 15
+  lags_hours: [1, 2, 3, 24, 48, 168]
+  rolling_windows_hours: [3, 24, 168]
+  timezone: "America/New_York"
+
+forecast:
+  horizons_hours: [1, 3, 6]
+
+split:
+  # Spec §7.1: final block untouched until model selection is frozen.
+  holdout_weeks: 8
+  # Gap between train end and validation start, in hours. Must be >= max horizon.
+  gap_hours: 6
+
+demand_tiers:
+  # Spec §7.2: metrics are reported by tier, not uniformly.
+  high_min_median: 20
+  medium_min_median: 2
