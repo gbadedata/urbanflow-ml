@@ -1,0 +1,169 @@
+{
+  "frozen_test": true,
+  "horizons": {
+    "1": {
+      "dispersion": 32.9476,
+      "coverage": [
+        {
+          "tier": "all",
+          "n": 291648,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.921,
+          "coverage_error": 0.021,
+          "mean_width": 20.1056,
+          "median_width": 6.0,
+          "below_lower": 0.023,
+          "above_upper": 0.0561
+        },
+        {
+          "tier": "high",
+          "n": 63168,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.8876,
+          "coverage_error": -0.0124,
+          "mean_width": 71.6642,
+          "median_width": 56.0,
+          "below_lower": 0.049,
+          "above_upper": 0.0634
+        },
+        {
+          "tier": "medium",
+          "n": 48384,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.8702,
+          "coverage_error": -0.0298,
+          "mean_width": 12.7057,
+          "median_width": 11.0,
+          "below_lower": 0.0414,
+          "above_upper": 0.0884
+        },
+        {
+          "tier": "low",
+          "n": 180096,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.9463,
+          "coverage_error": 0.0463,
+          "mean_width": 4.0097,
+          "median_width": 3.0,
+          "below_lower": 0.0089,
+          "above_upper": 0.0448
+        }
+      ],
+      "gate_passed": true,
+      "reasons": [
+        "high: 88.8% coverage, within tolerance",
+        "medium: 87.0% coverage, within tolerance"
+      ]
+    },
+    "3": {
+      "dispersion": 31.8928,
+      "coverage": [
+        {
+          "tier": "all",
+          "n": 291648,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.9192,
+          "coverage_error": 0.0192,
+          "mean_width": 20.3129,
+          "median_width": 6.0,
+          "below_lower": 0.0234,
+          "above_upper": 0.0574
+        },
+        {
+          "tier": "high",
+          "n": 63168,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.8836,
+          "coverage_error": -0.0164,
+          "mean_width": 72.5662,
+          "median_width": 56.0,
+          "below_lower": 0.051,
+          "above_upper": 0.0654
+        },
+        {
+          "tier": "medium",
+          "n": 48384,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.866,
+          "coverage_error": -0.034,
+          "mean_width": 12.7288,
+          "median_width": 11.0,
+          "below_lower": 0.0413,
+          "above_upper": 0.0928
+        },
+        {
+          "tier": "low",
+          "n": 180096,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.946,
+          "coverage_error": 0.046,
+          "mean_width": 4.0228,
+          "median_width": 3.0,
+          "below_lower": 0.0089,
+          "above_upper": 0.0451
+        }
+      ],
+      "gate_passed": false,
+      "reasons": [
+        "high: 88.4% coverage, within tolerance",
+        "medium: 86.6% coverage, within tolerance",
+        "medium: 9.3% of actuals exceed the upper bound against 5% expected"
+      ]
+    },
+    "6": {
+      "dispersion": 31.9465,
+      "coverage": [
+        {
+          "tier": "all",
+          "n": 291648,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.9179,
+          "coverage_error": 0.0179,
+          "mean_width": 20.3307,
+          "median_width": 6.0,
+          "below_lower": 0.0243,
+          "above_upper": 0.0578
+        },
+        {
+          "tier": "high",
+          "n": 63168,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.8801,
+          "coverage_error": -0.0199,
+          "mean_width": 72.6074,
+          "median_width": 56.0,
+          "below_lower": 0.0533,
+          "above_upper": 0.0667
+        },
+        {
+          "tier": "medium",
+          "n": 48384,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.8639,
+          "coverage_error": -0.0361,
+          "mean_width": 12.7636,
+          "median_width": 11.0,
+          "below_lower": 0.0433,
+          "above_upper": 0.0928
+        },
+        {
+          "tier": "low",
+          "n": 180096,
+          "nominal_coverage": 0.9,
+          "empirical_coverage": 0.9457,
+          "coverage_error": 0.0457,
+          "mean_width": 4.0278,
+          "median_width": 3.0,
+          "below_lower": 0.009,
+          "above_upper": 0.0453
+        }
+      ],
+      "gate_passed": false,
+      "reasons": [
+        "high: 88.0% coverage, within tolerance",
+        "medium: 86.4% coverage, within tolerance",
+        "medium: 9.3% of actuals exceed the upper bound against 5% expected"
+      ]
+    }
+  }
+}

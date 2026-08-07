@@ -220,3 +220,80 @@ def test_champion_rejects_use_before_fitting() -> None:
 
     with pytest.raises(RuntimeError, match="before fitting"):
         ChampionModel(name="x", description="").predict({})
+
+
+# --- gate version 2: comparative volume bias ---------------------------------
+#
+# Release 1 blocked a champion whose medium-tier bias was 0.945 in favour of a
+# baseline whose bias was 0.912. The absolute bound implicitly assumed an
+# unbiased fallback. These tests pin the corrected behaviour.
+
+
+def test_champion_ships_when_it_improves_on_a_biased_benchmark(config: Config) -> None:
+    """The release 1 case, with the real measured figures."""
+    benchmark = [
+        _metrics("all", 5.240, bias=0.981),
+        _metrics("high", 7.280, bias=0.994),
+        _metrics("medium", 3.276, bias=0.912),
+        _metrics("low", 5.053, bias=0.848),
+    ]
+    champion = [
+        _metrics("all", 2.336, bias=0.979),
+        _metrics("high", 5.132, bias=0.982),
+        _metrics("medium", 2.180, bias=0.945),
+        _metrics("low", 1.397, bias=0.983),
+    ]
+    result = evaluate_gate(config, 1, champion, benchmark)
+    assert result.passed, result.reasons
+    assert result.ships == CHAMPION
+    assert any("improves on the benchmark" in r for r in result.reasons)
+
+
+def test_champion_blocked_when_more_biased_than_the_benchmark(config: Config) -> None:
+    """The constraint still bites when the champion is the worse of the two."""
+    benchmark = [
+        _metrics("all", 5.0, bias=0.98),
+        _metrics("high", 7.0, bias=0.99),
+        _metrics("medium", 3.4, bias=0.97),
+    ]
+    champion = [
+        _metrics("all", 2.0, bias=0.90),
+        _metrics("high", 4.0, bias=0.99),
+        _metrics("medium", 2.0, bias=0.88),
+    ]
+    result = evaluate_gate(config, 1, champion, benchmark)
+    assert not result.passed
+    assert any("worse than the benchmark" in r for r in result.reasons)
+
+
+def test_bias_within_tolerance_needs_no_comparison(config: Config) -> None:
+    """An unbiased champion passes regardless of the benchmark."""
+    benchmark = [
+        _metrics("all", 5.0, bias=0.5),
+        _metrics("high", 7.0, bias=0.5),
+        _metrics("medium", 3.4, bias=0.5),
+    ]
+    champion = [
+        _metrics("all", 2.0, bias=1.00),
+        _metrics("high", 4.0, bias=1.01),
+        _metrics("medium", 2.0, bias=0.99),
+    ]
+    result = evaluate_gate(config, 1, champion, benchmark)
+    assert result.passed
+
+
+def test_over_forecasting_is_still_caught(config: Config) -> None:
+    """The comparative rule is two-sided; inflating demand is not a free pass."""
+    benchmark = [
+        _metrics("all", 5.0, bias=0.99),
+        _metrics("high", 7.0, bias=0.99),
+        _metrics("medium", 3.4, bias=0.99),
+    ]
+    champion = [
+        _metrics("all", 1.0, bias=1.30),
+        _metrics("high", 1.0, bias=1.30),
+        _metrics("medium", 1.0, bias=1.30),
+    ]
+    result = evaluate_gate(config, 1, champion, benchmark)
+    assert not result.passed
+    assert result.bias_violations

@@ -67,3 +67,11 @@ addopts = "-q --strict-markers"
 markers = [
     "network: requires internet access (deselect with '-m \"not network\"')",
 ]
+# Third-party deprecations only: Python 3.12 deprecated sqlite3's default
+# datetime adapter, and numpy 2.5 deprecated an assignment joblib performs.
+# Neither originates in this project; silencing them keeps failures visible.
+filterwarnings = [
+    "ignore:The default datetime adapter is deprecated:DeprecationWarning",
+    "ignore:Setting the shape on a NumPy array has been deprecated:DeprecationWarning",
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated:DeprecationWarning",
+]

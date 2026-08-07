@@ -26,6 +26,11 @@ logger = logging.getLogger(__name__)
 
 CHAMPION = "gbm_poisson"
 
+#: Gate version. 1 applied an absolute volume-bias bound; 2 makes it comparative
+#: after release 1 showed the absolute form could prefer a more biased model.
+#: See reports/gate_decision.md and reports/gate_exception.md.
+GATE_VERSION = 2
+
 #: Calendar columns are genuinely categorical: hour 23 is adjacent to hour 0, and
 #: a split on "month <= 6" is meaningless. The cyclical sin/cos encodings remain
 #: available alongside, so the model can use whichever representation helps.
@@ -164,18 +169,52 @@ def evaluate_gate(
                 f"below the {gates.min_relative_improvement:.0%} threshold"
             )
 
-    # 2. Volume bias is a hard constraint in every tier, gated or not.
+    # 2. Volume bias, comparative. See reports/gate_exception.md.
+    #
+    # Release 1 applied an absolute bound to the champion alone, which implicitly
+    # assumed the fallback was unbiased. It was not: Baseline B under-forecast
+    # medium-tier demand by 8.8% while the champion managed 5.5%, and the gate
+    # blocked the champion for bias in favour of a more biased model. A promotion
+    # that reduces bias cannot sensibly be blocked for bias.
+    #
+    # A champion now passes when its bias is within the absolute tolerance OR is
+    # no worse than the model it replaces. The absolute bound is retained so a
+    # model cannot ship indefinitely on the strength of a worse incumbent: the
+    # pairing permits shipping while imperfect, but only while improving.
     for tier, metrics in champ.items():
         if tier == "all" or np.isnan(metrics.volume_bias):
             continue
         deviation = abs(metrics.volume_bias - 1.0)
-        if deviation > gates.max_volume_bias_deviation:
+        if deviation <= gates.max_volume_bias_deviation:
+            continue
+
+        benchmark_metrics = bench.get(tier)
+        if benchmark_metrics is None or np.isnan(benchmark_metrics.volume_bias):
             bias_violations.append(f"{tier} (bias {metrics.volume_bias:.3f})")
             cleared = False
             reasons.append(
                 f"{tier}: volume bias {metrics.volume_bias:.3f} exceeds the "
-                f"±{gates.max_volume_bias_deviation:.0%} tolerance"
+                f"±{gates.max_volume_bias_deviation:.0%} tolerance and there is no "
+                f"benchmark to compare against"
             )
+            continue
+
+        benchmark_deviation = abs(benchmark_metrics.volume_bias - 1.0)
+        if deviation <= benchmark_deviation:
+            reasons.append(
+                f"{tier}: volume bias {metrics.volume_bias:.3f} is outside the "
+                f"±{gates.max_volume_bias_deviation:.0%} tolerance but improves on the "
+                f"benchmark's {benchmark_metrics.volume_bias:.3f}"
+            )
+            continue
+
+        bias_violations.append(f"{tier} (bias {metrics.volume_bias:.3f})")
+        cleared = False
+        reasons.append(
+            f"{tier}: volume bias {metrics.volume_bias:.3f} exceeds the "
+            f"±{gates.max_volume_bias_deviation:.0%} tolerance and is worse than the "
+            f"benchmark's {benchmark_metrics.volume_bias:.3f}"
+        )
 
     # 3. No tier may get materially worse, including ungated ones.
     for tier, improvement in improvements.items():
