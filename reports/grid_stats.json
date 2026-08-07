@@ -1,0 +1,13 @@
+{
+  "zones": 217,
+  "hours": 21887,
+  "rows": 4749479,
+  "expected_rows": 4749479,
+  "is_dense": true,
+  "zero_rows": 2180828,
+  "zero_share": 0.459172,
+  "total_pickups": 102929915,
+  "city_wide_zero_hours": 2,
+  "start_hour": "2023-01-01T05:00:00+00:00",
+  "end_hour": "2025-07-01T03:00:00+00:00"
+}

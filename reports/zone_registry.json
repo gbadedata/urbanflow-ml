@@ -1778,14 +1778,14 @@
       "excluded_reason": "below_volume_floor"
     },
     {
-      "zone_id": 187,
+      "zone_id": 176,
       "trips": 94,
       "mean_per_hour": 0.0043,
       "tier": "excluded",
       "excluded_reason": "below_volume_floor"
     },
     {
-      "zone_id": 176,
+      "zone_id": 187,
       "trips": 94,
       "mean_per_hour": 0.0043,
       "tier": "excluded",

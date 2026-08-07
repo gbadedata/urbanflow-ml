@@ -15,6 +15,7 @@ import duckdb
 import pytest
 
 from urbanflow.config import Config, load_config
+from urbanflow.duck import connect
 from urbanflow.validation.validate import _month_bounds, validate_month
 
 
@@ -36,7 +37,7 @@ def config(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Config:
 
 @pytest.fixture
 def con() -> duckdb.DuckDBPyConnection:
-    return duckdb.connect()
+    return connect()
 
 
 def test_month_bounds_regular_month() -> None:

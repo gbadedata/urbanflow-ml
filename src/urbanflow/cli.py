@@ -10,10 +10,15 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-import duckdb
 import typer
 
 from urbanflow.config import PROJECT_ROOT, get_config
+from urbanflow.duck import connect
+from urbanflow.features.grid import (
+    build_grid,
+    classify_zero_hour,
+    detect_city_wide_zero_hours,
+)
 from urbanflow.ingest.download import build_snapshot, download_zone_lookup
 from urbanflow.ingest.manifest import SnapshotManifest
 from urbanflow.ingest.sources import month_range, source_files
@@ -134,7 +139,7 @@ def validate(
     contract = load_contract()
     months = month_range(config.data.start_month, config.data.end_month)
 
-    con = duckdb.connect()
+    con = connect()
     results = []
     for month in months:
         path = config.raw_path / f"{config.data.service}_tripdata_{month}.parquet"
@@ -172,7 +177,7 @@ def validate(
 def zone_report() -> None:
     """Profile zone volumes and write the forecastable-zone registry."""
     config = get_config()
-    con = duckdb.connect()
+    con = connect()
 
     profiles = profile_zones(con, config)
     if not profiles:
@@ -188,6 +193,72 @@ def zone_report() -> None:
     typer.echo(f"zones forecastable: {len(keep)}")
     typer.echo(f"trips retained:     {kept_trips / total:.4%}" if total else "no trips")
     typer.echo(f"registry:           {path}")
+
+
+@app.command("build-grid")
+def build_grid_cmd() -> None:
+    """Build the dense zone-hour grid and assert it is complete."""
+    import json
+
+    config = get_config()
+    registry_path = PROJECT_ROOT / "reports" / "zone_registry.json"
+    if not registry_path.exists():
+        typer.echo("no zone registry — run `urbanflow zone-report` first", err=True)
+        raise typer.Exit(code=1)
+
+    registry = json.loads(registry_path.read_text())
+    zone_ids = [z["zone_id"] for z in registry["zones"] if z["tier"] != "excluded"]
+
+    con = connect()
+    stats = build_grid(con, config, zone_ids)
+
+    typer.echo(f"zones:          {stats.zones}")
+    typer.echo(f"hours:          {stats.hours:,}")
+    typer.echo(f"rows:           {stats.rows:,}")
+    typer.echo(f"expected rows:  {stats.expected_rows:,}")
+    typer.echo(f"zero rows:      {stats.zero_rows:,} ({stats.zero_share:.2%})")
+    typer.echo(f"total pickups:  {stats.total_pickups:,}")
+    typer.echo(f"span:           {stats.start_hour} .. {stats.end_hour}")
+
+    gaps = detect_city_wide_zero_hours(con)
+    if gaps:
+        classified = [(g, classify_zero_hour(g)) for g in gaps]
+        artifacts = [g for g, kind in classified if kind == "dst_fold_artifact"]
+        real_gaps = [g for g, kind in classified if kind == "ingestion_gap"]
+
+        typer.echo(f"\ncity-wide zero hours: {len(gaps)} (excluded from training)")
+        typer.echo(f"  DST fold artifacts: {len(artifacts)} (expected, ~1/year)")
+        typer.echo(f"  ingestion gaps:     {len(real_gaps)}")
+        for gap in real_gaps[:10]:
+            typer.echo(f"    {gap}")
+
+        excluded = config.validated_path.parent / "grid" / "excluded_hours.json"
+        excluded.parent.mkdir(parents=True, exist_ok=True)
+        excluded.write_text(
+            json.dumps(
+                [{"hour_utc": g.isoformat(), "reason": kind} for g, kind in classified],
+                indent=2,
+            )
+        )
+        typer.echo(f"  written: {excluded}")
+
+    out = config.validated_path.parent / "grid" / "zone_hour.parquet"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    con.execute(f"COPY zone_hour TO '{out}' (FORMAT PARQUET)")
+    typer.echo(f"\ngrid: {out}")
+
+    stats_path = PROJECT_ROOT / "reports" / "grid_stats.json"
+    stats_path.write_text(json.dumps(stats.to_dict(), indent=2))
+    typer.echo(f"stats: {stats_path}")
+
+    if not stats.is_dense:
+        typer.echo(
+            f"\nGRID IS NOT DENSE: {stats.rows:,} rows but {stats.expected_rows:,} "
+            "expected. This is a release blocker (spec §8, gate 1).",
+            err=True,
+        )
+        raise typer.Exit(code=1)
+    typer.echo("\ndensity check: PASS")
 
 
 if __name__ == "__main__":
