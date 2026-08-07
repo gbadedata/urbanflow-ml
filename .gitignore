@@ -5,6 +5,7 @@ data/processed/
 data/validated/
 data/quarantine/
 data/grid/
+data/features/
 *.parquet
 *.csv
 !tests/**/*.csv

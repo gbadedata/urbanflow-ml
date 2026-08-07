@@ -14,6 +14,11 @@ import typer
 
 from urbanflow.config import PROJECT_ROOT, get_config
 from urbanflow.duck import connect
+from urbanflow.features.build import (
+    assert_no_future_leakage,
+    build_features,
+    feature_columns,
+)
 from urbanflow.features.grid import (
     build_grid,
     classify_zero_hour,
@@ -259,6 +264,60 @@ def build_grid_cmd() -> None:
         )
         raise typer.Exit(code=1)
     typer.echo("\ndensity check: PASS")
+
+
+@app.command("build-features")
+def build_features_cmd() -> None:
+    """Build one feature table per horizon and assert no future leakage."""
+    import json
+
+    config = get_config()
+    grid_path = config.validated_path.parent / "grid" / "zone_hour.parquet"
+    if not grid_path.exists():
+        typer.echo("no grid — run `urbanflow build-grid` first", err=True)
+        raise typer.Exit(code=1)
+
+    con = connect()
+    con.execute(
+        f"CREATE OR REPLACE TEMP VIEW zone_hour AS SELECT * FROM read_parquet('{grid_path}')"
+    )
+
+    out_dir = config.validated_path.parent / "features"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    summary = []
+
+    for horizon in config.forecast.horizons_hours:
+        table = build_features(con, config, horizon)
+        assert_no_future_leakage(con, config, table, horizon)
+
+        row = con.execute(f"SELECT COUNT(*), MIN(target_hour), MAX(target_hour) FROM {table}")
+        count, first, last = row.fetchone()  # type: ignore[misc]
+        cols = [r[0] for r in con.execute(f"DESCRIBE SELECT * FROM {table}").fetchall()]
+        features = feature_columns(cols)
+
+        out = out_dir / f"{table}.parquet"
+        con.execute(f"COPY {table} TO '{out}' (FORMAT PARQUET)")
+
+        typer.echo(
+            f"h={horizon}h  rows {count:>10,}  features {len(features):>2}  "
+            f"anchor = target - {horizon + 2}h  leakage check PASS"
+        )
+        summary.append(
+            {
+                "horizon_hours": horizon,
+                "rows": count,
+                "anchor_offset_hours": horizon + 2,
+                "feature_count": len(features),
+                "features": features,
+                "first_target": str(first),
+                "last_target": str(last),
+                "path": str(out),
+            }
+        )
+
+    path = PROJECT_ROOT / "reports" / "feature_summary.json"
+    path.write_text(json.dumps(summary, indent=2))
+    typer.echo(f"\nsummary: {path}")
 
 
 if __name__ == "__main__":
