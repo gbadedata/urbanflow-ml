@@ -1,0 +1,417 @@
+{
+  "generated_at": "2026-08-07T14:23:34.754110+00:00",
+  "snapshot_id": null,
+  "months": 30,
+  "rows_in": 103563330,
+  "rows_out": 102956835,
+  "rows_quarantined": 606495,
+  "quarantine_rate": 0.005856,
+  "reason_totals": {
+    "ZONE_EXCLUDED": 601691,
+    "NEGATIVE_DURATION": 3011,
+    "TS_OUT_OF_MONTH": 1258,
+    "IMPLAUSIBLE_DURATION": 525,
+    "DUPLICATE": 10
+  },
+  "conservation_ok": true,
+  "by_month": [
+    {
+      "month": "2023-01",
+      "rows_in": 3066766,
+      "rows_out": 3024523,
+      "rows_quarantined": 42243,
+      "quarantine_rate": 0.013774,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 23,
+        "NEGATIVE_DURATION": 3,
+        "TS_OUT_OF_MONTH": 44,
+        "ZONE_EXCLUDED": 42173
+      }
+    },
+    {
+      "month": "2023-02",
+      "rows_in": 2913955,
+      "rows_out": 2875911,
+      "rows_quarantined": 38044,
+      "quarantine_rate": 0.013056,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 22,
+        "NEGATIVE_DURATION": 17,
+        "TS_OUT_OF_MONTH": 55,
+        "ZONE_EXCLUDED": 37950
+      }
+    },
+    {
+      "month": "2023-03",
+      "rows_in": 3403766,
+      "rows_out": 3368662,
+      "rows_quarantined": 35104,
+      "quarantine_rate": 0.010313,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 21,
+        "NEGATIVE_DURATION": 11,
+        "TS_OUT_OF_MONTH": 172,
+        "ZONE_EXCLUDED": 34900
+      }
+    },
+    {
+      "month": "2023-04",
+      "rows_in": 3288250,
+      "rows_out": 3251534,
+      "rows_quarantined": 36716,
+      "quarantine_rate": 0.011166,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 18,
+        "NEGATIVE_DURATION": 6,
+        "TS_OUT_OF_MONTH": 95,
+        "ZONE_EXCLUDED": 36597
+      }
+    },
+    {
+      "month": "2023-05",
+      "rows_in": 3513649,
+      "rows_out": 3474587,
+      "rows_quarantined": 39062,
+      "quarantine_rate": 0.011117,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 7,
+        "NEGATIVE_DURATION": 9,
+        "TS_OUT_OF_MONTH": 50,
+        "ZONE_EXCLUDED": 38996
+      }
+    },
+    {
+      "month": "2023-06",
+      "rows_in": 3307234,
+      "rows_out": 3271368,
+      "rows_quarantined": 35866,
+      "quarantine_rate": 0.010845,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 12,
+        "NEGATIVE_DURATION": 7,
+        "TS_OUT_OF_MONTH": 40,
+        "ZONE_EXCLUDED": 35807
+      }
+    },
+    {
+      "month": "2023-07",
+      "rows_in": 2907108,
+      "rows_out": 2875453,
+      "rows_quarantined": 31655,
+      "quarantine_rate": 0.010889,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 12,
+        "NEGATIVE_DURATION": 9,
+        "TS_OUT_OF_MONTH": 59,
+        "ZONE_EXCLUDED": 31575
+      }
+    },
+    {
+      "month": "2023-08",
+      "rows_in": 2824209,
+      "rows_out": 2795485,
+      "rows_quarantined": 28724,
+      "quarantine_rate": 0.010171,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 22,
+        "NEGATIVE_DURATION": 14,
+        "TS_OUT_OF_MONTH": 33,
+        "ZONE_EXCLUDED": 28655
+      }
+    },
+    {
+      "month": "2023-09",
+      "rows_in": 2846722,
+      "rows_out": 2817296,
+      "rows_quarantined": 29426,
+      "quarantine_rate": 0.010337,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 16,
+        "NEGATIVE_DURATION": 8,
+        "TS_OUT_OF_MONTH": 32,
+        "ZONE_EXCLUDED": 29370
+      }
+    },
+    {
+      "month": "2023-10",
+      "rows_in": 3522285,
+      "rows_out": 3489909,
+      "rows_quarantined": 32376,
+      "quarantine_rate": 0.009192,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 19,
+        "NEGATIVE_DURATION": 7,
+        "TS_OUT_OF_MONTH": 51,
+        "ZONE_EXCLUDED": 32299
+      }
+    },
+    {
+      "month": "2023-11",
+      "rows_in": 3339715,
+      "rows_out": 3311090,
+      "rows_quarantined": 28625,
+      "quarantine_rate": 0.008571,
+      "reason_counts": {
+        "DUPLICATE": 2,
+        "IMPLAUSIBLE_DURATION": 14,
+        "NEGATIVE_DURATION": 792,
+        "TS_OUT_OF_MONTH": 31,
+        "ZONE_EXCLUDED": 27786
+      }
+    },
+    {
+      "month": "2023-12",
+      "rows_in": 3376567,
+      "rows_out": 3360283,
+      "rows_quarantined": 16284,
+      "quarantine_rate": 0.004823,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 15,
+        "NEGATIVE_DURATION": 2,
+        "TS_OUT_OF_MONTH": 41,
+        "ZONE_EXCLUDED": 16226
+      }
+    },
+    {
+      "month": "2024-01",
+      "rows_in": 2964624,
+      "rows_out": 2952269,
+      "rows_quarantined": 12355,
+      "quarantine_rate": 0.004167,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 15,
+        "NEGATIVE_DURATION": 8,
+        "TS_OUT_OF_MONTH": 18,
+        "ZONE_EXCLUDED": 12314
+      }
+    },
+    {
+      "month": "2024-02",
+      "rows_in": 3007526,
+      "rows_out": 2996112,
+      "rows_quarantined": 11414,
+      "quarantine_rate": 0.003795,
+      "reason_counts": {
+        "DUPLICATE": 1,
+        "IMPLAUSIBLE_DURATION": 11,
+        "NEGATIVE_DURATION": 7,
+        "TS_OUT_OF_MONTH": 14,
+        "ZONE_EXCLUDED": 11381
+      }
+    },
+    {
+      "month": "2024-03",
+      "rows_in": 3582628,
+      "rows_out": 3568546,
+      "rows_quarantined": 14082,
+      "quarantine_rate": 0.003931,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 19,
+        "NEGATIVE_DURATION": 20,
+        "TS_OUT_OF_MONTH": 23,
+        "ZONE_EXCLUDED": 14020
+      }
+    },
+    {
+      "month": "2024-04",
+      "rows_in": 3514289,
+      "rows_out": 3500887,
+      "rows_quarantined": 13402,
+      "quarantine_rate": 0.003814,
+      "reason_counts": {
+        "DUPLICATE": 1,
+        "IMPLAUSIBLE_DURATION": 23,
+        "NEGATIVE_DURATION": 11,
+        "TS_OUT_OF_MONTH": 9,
+        "ZONE_EXCLUDED": 13358
+      }
+    },
+    {
+      "month": "2024-05",
+      "rows_in": 3723833,
+      "rows_out": 3709322,
+      "rows_quarantined": 14511,
+      "quarantine_rate": 0.003897,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 15,
+        "NEGATIVE_DURATION": 5,
+        "TS_OUT_OF_MONTH": 33,
+        "ZONE_EXCLUDED": 14458
+      }
+    },
+    {
+      "month": "2024-06",
+      "rows_in": 3539193,
+      "rows_out": 3525121,
+      "rows_quarantined": 14072,
+      "quarantine_rate": 0.003976,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 18,
+        "NEGATIVE_DURATION": 7,
+        "TS_OUT_OF_MONTH": 51,
+        "ZONE_EXCLUDED": 13996
+      }
+    },
+    {
+      "month": "2024-07",
+      "rows_in": 3076903,
+      "rows_out": 3064545,
+      "rows_quarantined": 12358,
+      "quarantine_rate": 0.004016,
+      "reason_counts": {
+        "DUPLICATE": 1,
+        "IMPLAUSIBLE_DURATION": 22,
+        "NEGATIVE_DURATION": 5,
+        "TS_OUT_OF_MONTH": 46,
+        "ZONE_EXCLUDED": 12284
+      }
+    },
+    {
+      "month": "2024-08",
+      "rows_in": 2979183,
+      "rows_out": 2968125,
+      "rows_quarantined": 11058,
+      "quarantine_rate": 0.003712,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 24,
+        "NEGATIVE_DURATION": 9,
+        "TS_OUT_OF_MONTH": 51,
+        "ZONE_EXCLUDED": 10974
+      }
+    },
+    {
+      "month": "2024-09",
+      "rows_in": 3633030,
+      "rows_out": 3620655,
+      "rows_quarantined": 12375,
+      "quarantine_rate": 0.003406,
+      "reason_counts": {
+        "DUPLICATE": 1,
+        "IMPLAUSIBLE_DURATION": 24,
+        "NEGATIVE_DURATION": 45,
+        "TS_OUT_OF_MONTH": 49,
+        "ZONE_EXCLUDED": 12256
+      }
+    },
+    {
+      "month": "2024-10",
+      "rows_in": 3833771,
+      "rows_out": 3820665,
+      "rows_quarantined": 13106,
+      "quarantine_rate": 0.003419,
+      "reason_counts": {
+        "DUPLICATE": 2,
+        "IMPLAUSIBLE_DURATION": 16,
+        "NEGATIVE_DURATION": 39,
+        "TS_OUT_OF_MONTH": 40,
+        "ZONE_EXCLUDED": 13009
+      }
+    },
+    {
+      "month": "2024-11",
+      "rows_in": 3646369,
+      "rows_out": 3633507,
+      "rows_quarantined": 12862,
+      "quarantine_rate": 0.003527,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 10,
+        "NEGATIVE_DURATION": 1078,
+        "TS_OUT_OF_MONTH": 50,
+        "ZONE_EXCLUDED": 11724
+      }
+    },
+    {
+      "month": "2024-12",
+      "rows_in": 3668371,
+      "rows_out": 3655850,
+      "rows_quarantined": 12521,
+      "quarantine_rate": 0.003413,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 17,
+        "NEGATIVE_DURATION": 99,
+        "TS_OUT_OF_MONTH": 34,
+        "ZONE_EXCLUDED": 12371
+      }
+    },
+    {
+      "month": "2025-01",
+      "rows_in": 3475226,
+      "rows_out": 3465165,
+      "rows_quarantined": 10061,
+      "quarantine_rate": 0.002895,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 17,
+        "NEGATIVE_DURATION": 124,
+        "TS_OUT_OF_MONTH": 22,
+        "ZONE_EXCLUDED": 9898
+      }
+    },
+    {
+      "month": "2025-02",
+      "rows_in": 3577543,
+      "rows_out": 3568456,
+      "rows_quarantined": 9087,
+      "quarantine_rate": 0.00254,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 14,
+        "NEGATIVE_DURATION": 93,
+        "TS_OUT_OF_MONTH": 31,
+        "ZONE_EXCLUDED": 8949
+      }
+    },
+    {
+      "month": "2025-03",
+      "rows_in": 4145257,
+      "rows_out": 4135531,
+      "rows_quarantined": 9726,
+      "quarantine_rate": 0.002346,
+      "reason_counts": {
+        "DUPLICATE": 1,
+        "IMPLAUSIBLE_DURATION": 11,
+        "NEGATIVE_DURATION": 81,
+        "TS_OUT_OF_MONTH": 33,
+        "ZONE_EXCLUDED": 9600
+      }
+    },
+    {
+      "month": "2025-04",
+      "rows_in": 3970553,
+      "rows_out": 3960894,
+      "rows_quarantined": 9659,
+      "quarantine_rate": 0.002433,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 24,
+        "NEGATIVE_DURATION": 163,
+        "TS_OUT_OF_MONTH": 7,
+        "ZONE_EXCLUDED": 9465
+      }
+    },
+    {
+      "month": "2025-05",
+      "rows_in": 4591845,
+      "rows_out": 4581476,
+      "rows_quarantined": 10369,
+      "quarantine_rate": 0.002258,
+      "reason_counts": {
+        "DUPLICATE": 1,
+        "IMPLAUSIBLE_DURATION": 24,
+        "NEGATIVE_DURATION": 101,
+        "TS_OUT_OF_MONTH": 24,
+        "ZONE_EXCLUDED": 10219
+      }
+    },
+    {
+      "month": "2025-06",
+      "rows_in": 4322960,
+      "rows_out": 4313608,
+      "rows_quarantined": 9352,
+      "quarantine_rate": 0.002163,
+      "reason_counts": {
+        "IMPLAUSIBLE_DURATION": 20,
+        "NEGATIVE_DURATION": 231,
+        "TS_OUT_OF_MONTH": 20,
+        "ZONE_EXCLUDED": 9081
+      }
+    }
+  ]
+}

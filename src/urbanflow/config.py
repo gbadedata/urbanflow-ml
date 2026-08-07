@@ -22,6 +22,8 @@ class DataConfig(BaseModel):
     service: str = "yellow"
     raw_dir: Path
     manifest_dir: Path
+    validated_dir: Path
+    quarantine_dir: Path
 
     @field_validator("start_month", "end_month")
     @classmethod
@@ -39,6 +41,9 @@ class DataConfig(BaseModel):
 
 class ZonesConfig(BaseModel):
     excluded_location_ids: list[int]
+    min_location_id: int = Field(ge=1)
+    max_location_id: int = Field(ge=1)
+    min_pickups_per_hour: float = Field(ge=0)
     lookup_url: str
 
 
@@ -58,9 +63,32 @@ class SplitConfig(BaseModel):
     gap_hours: int = Field(ge=0)
 
 
+class ValidationConfig(BaseModel):
+    max_trip_duration_hours: int = Field(gt=0)
+    dst_ambiguous_policy: str = "earliest"
+
+
 class DemandTiersConfig(BaseModel):
-    high_min_median: float
-    medium_min_median: float
+    """Tiers are defined on MEAN hourly pickups, not median.
+
+    Measured against 2024 data, 152 of 259 zones average under 1 pickup/hour and
+    their median hour is exactly 0, so a median-based rule collapses almost every
+    zone into the low tier and erases the distinction.
+    """
+
+    metric: str = "mean"
+    high_min: float
+    medium_min: float
+
+    @field_validator("metric")
+    @classmethod
+    def _check_metric(cls, v: str) -> str:
+        if v != "mean":
+            raise ValueError(
+                "demand tiers must be defined on mean hourly pickups; median "
+                "classifies nearly every zone as low (see configs/config.yaml)"
+            )
+        return v
 
 
 class Config(BaseModel):
@@ -70,6 +98,7 @@ class Config(BaseModel):
     forecast: ForecastConfig
     split: SplitConfig
     demand_tiers: DemandTiersConfig
+    validation: ValidationConfig
 
     @property
     def raw_path(self) -> Path:
@@ -78,6 +107,30 @@ class Config(BaseModel):
     @property
     def manifest_path(self) -> Path:
         return _resolve(self.data.manifest_dir)
+
+    @property
+    def validated_path(self) -> Path:
+        return _resolve(self.data.validated_dir)
+
+    @property
+    def quarantine_path(self) -> Path:
+        return _resolve(self.data.quarantine_dir)
+
+    @property
+    def validation_max_duration_hours(self) -> int:
+        return self.validation.max_trip_duration_hours
+
+    def check_zone_range(self) -> None:
+        """Excluded zones must be inside the declared valid range."""
+        out_of_range = [
+            z
+            for z in self.zones.excluded_location_ids
+            if not self.zones.min_location_id <= z <= self.zones.max_location_id
+        ]
+        if out_of_range:
+            raise ValueError(
+                f"excluded zone ids fall outside the valid LocationID range: {out_of_range}"
+            )
 
     def check_gap_covers_horizon(self) -> None:
         """Spec §7.1: the train/validation gap must be at least the longest horizon.
@@ -103,6 +156,7 @@ def load_config(path: Path | None = None) -> Config:
         raw = yaml.safe_load(fh)
     config = Config.model_validate(raw)
     config.check_gap_covers_horizon()
+    config.check_zone_range()
     return config
 
 

@@ -3,24 +3,42 @@
 # These values are the decisions locked before any modelling code is written
 # (spec v2 §5, §6.2, §2.1). Changing any of them invalidates existing snapshots
 # and trained models, so treat edits as versioned events, not tweaks.
+#
+# Figures cited below were measured against calendar year 2024 of snapshot
+# yellow-2023-01-2025-06-26c6cf6a154f (41,169,720 trips).
 
 data:
   # Spec §5.1: window starts 2023-01 to avoid the COVID structural break and the
-  # steepest part of the yellow-taxi secular decline. Verify against a current
-  # TLC snapshot before fixing.
+  # steepest part of the yellow-taxi secular decline.
   start_month: "2023-01"
   end_month: "2025-06"
   service: "yellow"
   raw_dir: "data/raw"
   manifest_dir: "data/manifests"
+  validated_dir: "data/validated"
+  quarantine_dir: "data/quarantine"
 
 zones:
-  # Spec §5.1: not every TLC LocationID is forecastable.
-  #   264 / 265 — "Unknown" / "N/A" placeholder zones
-  #   1         — Newark Airport (EWR), idiosyncratic and near-zero yellow volume
-  #   103,104,105 — Governor's Island / Ellis Island / Liberty Island, negligible volume
-  # Populate and justify this list in the README before the grid is built.
+  # Structural exclusions — these are not forecastable places.
+  #   264  "Unknown"        placeholder, 122,200 trips in 2024
+  #   265  "Outside of NYC" placeholder, 24,001 trips
+  #   1    Newark Airport   outside yellow pickup jurisdiction, 5,940 trips (~16/day)
+  #   103/104/105  Governor's / Ellis / Liberty Island — three IDs, one zone name,
+  #                0, 0 and 4 pickups respectively across all of 2024
   excluded_location_ids: [1, 103, 104, 105, 264, 265]
+
+  # Valid TLC LocationID range; anything outside is a data error, not a zone.
+  min_location_id: 1
+  max_location_id: 265
+
+  # Volume floor for forecastability. 43 of 259 zones fall below 0.1 pickups/hour
+  # and together account for 0.02% of trips — one zone recorded a single pickup in
+  # the entire year. They cannot support hourly forecasting and would inject pure
+  # noise into any macro-averaged metric. Dropping to a 0.5/hr floor would cost
+  # 0.48% of trips for 79 more zones, which is not free; 0.1/hr is the cut where
+  # the trade is unambiguous.
+  min_pickups_per_hour: 0.1
+
   lookup_url: "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
 
 features:
@@ -42,6 +60,26 @@ split:
   gap_hours: 6
 
 demand_tiers:
-  # Spec §7.2: metrics are reported by tier, not uniformly.
-  high_min_median: 20
-  medium_min_median: 2
+  # CORRECTION to spec v2 §7.2, which defined tiers on MEDIAN hourly pickups.
+  # Measured against real data that is unworkable: 152 of 259 zones average under
+  # 1 pickup/hour, and because demand concentrates in daytime hours their median
+  # hour is exactly 0. Median-based tiering would classify almost every zone as
+  # low and collapse the distinction the tiers exist to draw.
+  #
+  # Tiers are therefore defined on MEAN hourly pickups. 2024 distribution:
+  #   >= 20/hr   47 zones    high
+  #   2-20/hr    31 zones    medium
+  #   0.1-2/hr  138 zones    low
+  # High and medium together carry 98.17% of trips and are what the acceptance
+  # gates are measured on; low tier is reported but not gated (spec §8, gate 4).
+  metric: "mean"
+  high_min: 20.0
+  medium_min: 2.0
+
+validation:
+  # Rows failing any rule are quarantined with a reason code and counted; they are
+  # never silently dropped (spec §6.1).
+  max_trip_duration_hours: 24
+  # Ambiguous local times during the autumn DST fold resolve to the earlier
+  # (daylight) reading. Nonexistent times in the spring gap are quarantined.
+  dst_ambiguous_policy: "earliest"

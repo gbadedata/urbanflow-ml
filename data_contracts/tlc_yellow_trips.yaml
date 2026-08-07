@@ -1,0 +1,81 @@
+# Data contract — TLC yellow taxi trip records
+#
+# Declares only the columns this project consumes. TLC adds and renames fare
+# columns between releases; asserting whole-schema equality (as the ingest
+# manifest does) produces false alarms for changes that cannot affect us.
+# This contract instead requires that the columns we depend on are present with
+# a compatible type, and is silent about everything else.
+#
+# `type_family` rather than an exact type is deliberate: TLC shipped
+# PULocationID as int64 in 2023-01 and int32 from 2023-02, with identical values
+# (zone IDs are 1-265). Any integer width is acceptable; a string or float is not.
+
+name: tlc_yellow_trips
+version: 1
+
+required_columns:
+  - name: tpep_pickup_datetime
+    type_family: timestamp
+    canonical_type: "timestamp[us]"
+    role: "time index and forecast target source"
+    nullable: false
+
+  - name: PULocationID
+    type_family: integer
+    canonical_type: int32
+    role: "prediction unit — the zone the forecast is made for"
+    nullable: false
+
+  - name: tpep_dropoff_datetime
+    type_family: timestamp
+    canonical_type: "timestamp[us]"
+    role: "quality control only — never a feature (spec §7.4)"
+    nullable: true
+
+  - name: VendorID
+    type_family: integer
+    canonical_type: int32
+    role: "provenance and duplicate signature"
+    nullable: true
+
+# Columns present in the source that must never reach a model. Listed explicitly
+# so that the prohibition is testable rather than conventional (spec §7.4).
+prohibited_columns:
+  - DOLocationID
+  - fare_amount
+  - tip_amount
+  - tolls_amount
+  - total_amount
+  - payment_type
+  - extra
+  - mta_tax
+  - improvement_surcharge
+  - congestion_surcharge
+  - airport_fee
+  - Airport_fee
+  - cbd_congestion_fee
+  - trip_distance
+  - RatecodeID
+  - store_and_fwd_flag
+
+# Row-level rules. Every rule has a reason code; failing rows are written to
+# quarantine with that code attached and counted in the quality report.
+rules:
+  - code: NULL_PICKUP_TS
+    description: "Pickup timestamp is null"
+  - code: NULL_ZONE
+    description: "PULocationID is null"
+  - code: ZONE_OUT_OF_RANGE
+    description: "PULocationID outside the valid 1-265 range"
+  - code: ZONE_EXCLUDED
+    description: "PULocationID is a structurally excluded zone (config zones.excluded_location_ids)"
+  - code: TS_OUT_OF_MONTH
+    description: "Pickup timestamp falls outside the file's nominal month; TLC files carry stray rows dated years away"
+  - code: DST_NONEXISTENT
+    description: "Local time falls in the spring-forward gap and does not exist"
+  - code: NEGATIVE_DURATION
+    description: "Dropoff precedes pickup"
+  - code: IMPLAUSIBLE_DURATION
+    description: "Trip duration exceeds validation.max_trip_duration_hours"
+  - code: DUPLICATE
+    description: "Exact duplicate of an earlier row on the signature columns"

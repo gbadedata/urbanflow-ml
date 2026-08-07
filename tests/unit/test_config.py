@@ -49,7 +49,47 @@ def test_unknown_zones_are_excluded() -> None:
 
 def test_demand_tiers_are_ordered() -> None:
     config = load_config()
-    assert config.demand_tiers.high_min_median > config.demand_tiers.medium_min_median
+    assert config.demand_tiers.high_min > config.demand_tiers.medium_min
+
+
+def test_demand_tiers_use_mean_not_median() -> None:
+    """Measured correction to spec §7.2.
+
+    152 of 259 zones average under 1 pickup/hour and their median hour is 0, so a
+    median-based rule puts nearly every zone in the low tier.
+    """
+    config = load_config()
+    assert config.demand_tiers.metric == "mean"
+
+
+def test_demand_tiers_reject_median_metric(tmp_path: Path) -> None:
+    raw = yaml.safe_load(DEFAULT_CONFIG_PATH.read_text())
+    raw["demand_tiers"]["metric"] = "median"
+    path = tmp_path / "config.yaml"
+    path.write_text(yaml.safe_dump(raw))
+    with pytest.raises(ValidationError, match="mean"):
+        load_config(path)
+
+
+def test_volume_floor_is_set() -> None:
+    """43 zones fall below 0.1 pickups/hour and carry 0.02% of trips."""
+    config = load_config()
+    assert config.zones.min_pickups_per_hour > 0
+
+
+def test_excluded_zones_within_valid_range() -> None:
+    config = load_config()
+    for zone in config.zones.excluded_location_ids:
+        assert config.zones.min_location_id <= zone <= config.zones.max_location_id
+
+
+def test_rejects_excluded_zone_outside_range(tmp_path: Path) -> None:
+    raw = yaml.safe_load(DEFAULT_CONFIG_PATH.read_text())
+    raw["zones"]["excluded_location_ids"] = [1, 9999]
+    path = tmp_path / "config.yaml"
+    path.write_text(yaml.safe_dump(raw))
+    with pytest.raises(ValueError, match="outside the valid"):
+        load_config(path)
 
 
 def test_rejects_bad_month_format(tmp_path: Path) -> None:

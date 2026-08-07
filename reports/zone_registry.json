@@ -1,0 +1,1830 @@
+{
+  "min_pickups_per_hour": 0.1,
+  "tier_metric": "mean",
+  "tier_high_min": 20.0,
+  "tier_medium_min": 2.0,
+  "zones_profiled": 259,
+  "zones_forecastable": 217,
+  "trips_retained_share": 0.999739,
+  "tier_counts": {
+    "high": 47,
+    "medium": 36,
+    "low": 134,
+    "excluded": 42
+  },
+  "zones": [
+    {
+      "zone_id": 132,
+      "trips": 4957815,
+      "mean_per_hour": 226.5187,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 237,
+      "trips": 4772013,
+      "mean_per_hour": 218.0296,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 161,
+      "trips": 4742021,
+      "mean_per_hour": 216.6592,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 236,
+      "trips": 4284712,
+      "mean_per_hour": 195.7652,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 162,
+      "trips": 3520763,
+      "mean_per_hour": 160.8609,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 230,
+      "trips": 3440404,
+      "mean_per_hour": 157.1894,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 186,
+      "trips": 3420011,
+      "mean_per_hour": 156.2576,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 142,
+      "trips": 3272202,
+      "mean_per_hour": 149.5044,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 138,
+      "trips": 3235438,
+      "mean_per_hour": 147.8246,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 170,
+      "trips": 2951282,
+      "mean_per_hour": 134.8418,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 163,
+      "trips": 2905237,
+      "mean_per_hour": 132.738,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 239,
+      "trips": 2820299,
+      "mean_per_hour": 128.8573,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 234,
+      "trips": 2786576,
+      "mean_per_hour": 127.3165,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 68,
+      "trips": 2735443,
+      "mean_per_hour": 124.9803,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 48,
+      "trips": 2640564,
+      "mean_per_hour": 120.6453,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 79,
+      "trips": 2465056,
+      "mean_per_hour": 112.6265,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 141,
+      "trips": 2349989,
+      "mean_per_hour": 107.3692,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 164,
+      "trips": 2342829,
+      "mean_per_hour": 107.042,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 249,
+      "trips": 2342172,
+      "mean_per_hour": 107.012,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 107,
+      "trips": 2089067,
+      "mean_per_hour": 95.4478,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 140,
+      "trips": 2017164,
+      "mean_per_hour": 92.1627,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 238,
+      "trips": 1965209,
+      "mean_per_hour": 89.7889,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 263,
+      "trips": 1923556,
+      "mean_per_hour": 87.8858,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 229,
+      "trips": 1815360,
+      "mean_per_hour": 82.9424,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 246,
+      "trips": 1797123,
+      "mean_per_hour": 82.1092,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 90,
+      "trips": 1644972,
+      "mean_per_hour": 75.1575,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 100,
+      "trips": 1601677,
+      "mean_per_hour": 73.1794,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 43,
+      "trips": 1598026,
+      "mean_per_hour": 73.0126,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 114,
+      "trips": 1468380,
+      "mean_per_hour": 67.0891,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 113,
+      "trips": 1451428,
+      "mean_per_hour": 66.3146,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 231,
+      "trips": 1412759,
+      "mean_per_hour": 64.5479,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 262,
+      "trips": 1393182,
+      "mean_per_hour": 63.6534,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 233,
+      "trips": 1215229,
+      "mean_per_hour": 55.5229,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 148,
+      "trips": 1144611,
+      "mean_per_hour": 52.2964,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 143,
+      "trips": 1141165,
+      "mean_per_hour": 52.1389,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 137,
+      "trips": 1113979,
+      "mean_per_hour": 50.8968,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 144,
+      "trips": 1038158,
+      "mean_per_hour": 47.4326,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 158,
+      "trips": 1005095,
+      "mean_per_hour": 45.922,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 211,
+      "trips": 837675,
+      "mean_per_hour": 38.2727,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 151,
+      "trips": 816517,
+      "mean_per_hour": 37.306,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 50,
+      "trips": 659526,
+      "mean_per_hour": 30.1332,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 75,
+      "trips": 657527,
+      "mean_per_hour": 30.0419,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 13,
+      "trips": 628678,
+      "mean_per_hour": 28.7238,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 87,
+      "trips": 595720,
+      "mean_per_hour": 27.218,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 261,
+      "trips": 538452,
+      "mean_per_hour": 24.6015,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 125,
+      "trips": 524714,
+      "mean_per_hour": 23.9738,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 166,
+      "trips": 511151,
+      "mean_per_hour": 23.3541,
+      "tier": "high",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 70,
+      "trips": 402868,
+      "mean_per_hour": 18.4067,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 88,
+      "trips": 311296,
+      "mean_per_hour": 14.2229,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 41,
+      "trips": 311241,
+      "mean_per_hour": 14.2204,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 74,
+      "trips": 277552,
+      "mean_per_hour": 12.6811,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 24,
+      "trips": 268039,
+      "mean_per_hour": 12.2465,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 209,
+      "trips": 211284,
+      "mean_per_hour": 9.6534,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 4,
+      "trips": 190867,
+      "mean_per_hour": 8.7206,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 232,
+      "trips": 168942,
+      "mean_per_hour": 7.7188,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 45,
+      "trips": 168197,
+      "mean_per_hour": 7.6848,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 224,
+      "trips": 162637,
+      "mean_per_hour": 7.4308,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 42,
+      "trips": 159556,
+      "mean_per_hour": 7.29,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 145,
+      "trips": 128668,
+      "mean_per_hour": 5.8787,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 226,
+      "trips": 109661,
+      "mean_per_hour": 5.0103,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 116,
+      "trips": 107545,
+      "mean_per_hour": 4.9136,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 244,
+      "trips": 102864,
+      "mean_per_hour": 4.6998,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 7,
+      "trips": 94198,
+      "mean_per_hour": 4.3038,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 255,
+      "trips": 92961,
+      "mean_per_hour": 4.2473,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 65,
+      "trips": 87460,
+      "mean_per_hour": 3.996,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 152,
+      "trips": 85020,
+      "mean_per_hour": 3.8845,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 33,
+      "trips": 78405,
+      "mean_per_hour": 3.5823,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 61,
+      "trips": 74456,
+      "mean_per_hour": 3.4018,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 256,
+      "trips": 71685,
+      "mean_per_hour": 3.2752,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 97,
+      "trips": 69711,
+      "mean_per_hour": 3.185,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 193,
+      "trips": 68085,
+      "mean_per_hour": 3.1108,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 25,
+      "trips": 66362,
+      "mean_per_hour": 3.032,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 181,
+      "trips": 62375,
+      "mean_per_hour": 2.8499,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 146,
+      "trips": 61924,
+      "mean_per_hour": 2.8293,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 66,
+      "trips": 60181,
+      "mean_per_hour": 2.7496,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 80,
+      "trips": 57382,
+      "mean_per_hour": 2.6217,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 112,
+      "trips": 55263,
+      "mean_per_hour": 2.5249,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 76,
+      "trips": 52773,
+      "mean_per_hour": 2.4112,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 129,
+      "trips": 52680,
+      "mean_per_hour": 2.4069,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 37,
+      "trips": 49007,
+      "mean_per_hour": 2.2391,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 130,
+      "trips": 46568,
+      "mean_per_hour": 2.1277,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 188,
+      "trips": 45862,
+      "mean_per_hour": 2.0954,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 216,
+      "trips": 44691,
+      "mean_per_hour": 2.0419,
+      "tier": "medium",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 12,
+      "trips": 42616,
+      "mean_per_hour": 1.9471,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 89,
+      "trips": 42077,
+      "mean_per_hour": 1.9225,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 225,
+      "trips": 40847,
+      "mean_per_hour": 1.8663,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 17,
+      "trips": 40813,
+      "mean_per_hour": 1.8647,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 260,
+      "trips": 39491,
+      "mean_per_hour": 1.8043,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 10,
+      "trips": 39340,
+      "mean_per_hour": 1.7974,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 49,
+      "trips": 38776,
+      "mean_per_hour": 1.7716,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 39,
+      "trips": 37513,
+      "mean_per_hour": 1.7139,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 243,
+      "trips": 35638,
+      "mean_per_hour": 1.6283,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 168,
+      "trips": 35512,
+      "mean_per_hour": 1.6225,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 93,
+      "trips": 34181,
+      "mean_per_hour": 1.5617,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 197,
+      "trips": 34112,
+      "mean_per_hour": 1.5586,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 179,
+      "trips": 33701,
+      "mean_per_hour": 1.5398,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 82,
+      "trips": 33248,
+      "mean_per_hour": 1.5191,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 223,
+      "trips": 32916,
+      "mean_per_hour": 1.5039,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 36,
+      "trips": 32683,
+      "mean_per_hour": 1.4933,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 95,
+      "trips": 31812,
+      "mean_per_hour": 1.4535,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 35,
+      "trips": 30046,
+      "mean_per_hour": 1.3728,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 72,
+      "trips": 28417,
+      "mean_per_hour": 1.2984,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 91,
+      "trips": 25746,
+      "mean_per_hour": 1.1763,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 52,
+      "trips": 25663,
+      "mean_per_hour": 1.1725,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 177,
+      "trips": 24806,
+      "mean_per_hour": 1.1334,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 215,
+      "trips": 24113,
+      "mean_per_hour": 1.1017,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 71,
+      "trips": 24017,
+      "mean_per_hour": 1.0973,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 247,
+      "trips": 23118,
+      "mean_per_hour": 1.0562,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 62,
+      "trips": 22917,
+      "mean_per_hour": 1.0471,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 189,
+      "trips": 22697,
+      "mean_per_hour": 1.037,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 195,
+      "trips": 22413,
+      "mean_per_hour": 1.024,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 157,
+      "trips": 22259,
+      "mean_per_hour": 1.017,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 40,
+      "trips": 21657,
+      "mean_per_hour": 0.9895,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 228,
+      "trips": 20101,
+      "mean_per_hour": 0.9184,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 14,
+      "trips": 19636,
+      "mean_per_hour": 0.8972,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 198,
+      "trips": 18751,
+      "mean_per_hour": 0.8567,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 69,
+      "trips": 18237,
+      "mean_per_hour": 0.8332,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 28,
+      "trips": 17022,
+      "mean_per_hour": 0.7777,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 219,
+      "trips": 16954,
+      "mean_per_hour": 0.7746,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 134,
+      "trips": 16817,
+      "mean_per_hour": 0.7684,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 159,
+      "trips": 16663,
+      "mean_per_hour": 0.7613,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 85,
+      "trips": 16629,
+      "mean_per_hour": 0.7598,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 205,
+      "trips": 15980,
+      "mean_per_hour": 0.7301,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 51,
+      "trips": 15745,
+      "mean_per_hour": 0.7194,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 213,
+      "trips": 15583,
+      "mean_per_hour": 0.712,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 127,
+      "trips": 15118,
+      "mean_per_hour": 0.6907,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 196,
+      "trips": 14343,
+      "mean_per_hour": 0.6553,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 55,
+      "trips": 14133,
+      "mean_per_hour": 0.6457,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 92,
+      "trips": 13924,
+      "mean_per_hour": 0.6362,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 56,
+      "trips": 13910,
+      "mean_per_hour": 0.6355,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 63,
+      "trips": 13150,
+      "mean_per_hour": 0.6008,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 77,
+      "trips": 13124,
+      "mean_per_hour": 0.5996,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 218,
+      "trips": 12988,
+      "mean_per_hour": 0.5934,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 191,
+      "trips": 12850,
+      "mean_per_hour": 0.5871,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 258,
+      "trips": 12840,
+      "mean_per_hour": 0.5866,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 106,
+      "trips": 12760,
+      "mean_per_hour": 0.583,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 83,
+      "trips": 12748,
+      "mean_per_hour": 0.5824,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 254,
+      "trips": 12653,
+      "mean_per_hour": 0.5781,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 26,
+      "trips": 12584,
+      "mean_per_hour": 0.575,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 167,
+      "trips": 12283,
+      "mean_per_hour": 0.5612,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 235,
+      "trips": 12175,
+      "mean_per_hour": 0.5563,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 155,
+      "trips": 12083,
+      "mean_per_hour": 0.5521,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 165,
+      "trips": 11955,
+      "mean_per_hour": 0.5462,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 222,
+      "trips": 11779,
+      "mean_per_hour": 0.5382,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 182,
+      "trips": 11714,
+      "mean_per_hour": 0.5352,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 169,
+      "trips": 11428,
+      "mean_per_hour": 0.5221,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 119,
+      "trips": 10588,
+      "mean_per_hour": 0.4838,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 133,
+      "trips": 10531,
+      "mean_per_hour": 0.4812,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 210,
+      "trips": 10421,
+      "mean_per_hour": 0.4761,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 78,
+      "trips": 10111,
+      "mean_per_hour": 0.462,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 86,
+      "trips": 9746,
+      "mean_per_hour": 0.4453,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 242,
+      "trips": 9382,
+      "mean_per_hour": 0.4287,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 117,
+      "trips": 9347,
+      "mean_per_hour": 0.4271,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 18,
+      "trips": 9067,
+      "mean_per_hour": 0.4143,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 22,
+      "trips": 9020,
+      "mean_per_hour": 0.4121,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 121,
+      "trips": 8858,
+      "mean_per_hour": 0.4047,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 160,
+      "trips": 8547,
+      "mean_per_hour": 0.3905,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 241,
+      "trips": 8546,
+      "mean_per_hour": 0.3905,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 217,
+      "trips": 8531,
+      "mean_per_hour": 0.3898,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 131,
+      "trips": 8476,
+      "mean_per_hour": 0.3873,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 212,
+      "trips": 8400,
+      "mean_per_hour": 0.3838,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 47,
+      "trips": 8357,
+      "mean_per_hour": 0.3818,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 220,
+      "trips": 8271,
+      "mean_per_hour": 0.3779,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 123,
+      "trips": 8259,
+      "mean_per_hour": 0.3773,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 135,
+      "trips": 7937,
+      "mean_per_hour": 0.3626,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 248,
+      "trips": 7903,
+      "mean_per_hour": 0.3611,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 250,
+      "trips": 7836,
+      "mean_per_hour": 0.358,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 124,
+      "trips": 7826,
+      "mean_per_hour": 0.3576,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 207,
+      "trips": 7802,
+      "mean_per_hour": 0.3565,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 174,
+      "trips": 7734,
+      "mean_per_hour": 0.3534,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 126,
+      "trips": 7623,
+      "mean_per_hour": 0.3483,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 29,
+      "trips": 7146,
+      "mean_per_hour": 0.3265,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 34,
+      "trips": 7130,
+      "mean_per_hour": 0.3258,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 259,
+      "trips": 7034,
+      "mean_per_hour": 0.3214,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 173,
+      "trips": 7019,
+      "mean_per_hour": 0.3207,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 102,
+      "trips": 6999,
+      "mean_per_hour": 0.3198,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 227,
+      "trips": 6959,
+      "mean_per_hour": 0.318,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 208,
+      "trips": 6951,
+      "mean_per_hour": 0.3176,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 136,
+      "trips": 6897,
+      "mean_per_hour": 0.3151,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 203,
+      "trips": 6819,
+      "mean_per_hour": 0.3116,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 180,
+      "trips": 6653,
+      "mean_per_hour": 0.304,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 81,
+      "trips": 6649,
+      "mean_per_hour": 0.3038,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 202,
+      "trips": 6615,
+      "mean_per_hour": 0.3022,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 257,
+      "trips": 6614,
+      "mean_per_hour": 0.3022,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 149,
+      "trips": 6464,
+      "mean_per_hour": 0.2953,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 139,
+      "trips": 6459,
+      "mean_per_hour": 0.2951,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 21,
+      "trips": 6363,
+      "mean_per_hour": 0.2907,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 60,
+      "trips": 6240,
+      "mean_per_hour": 0.2851,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 147,
+      "trips": 6198,
+      "mean_per_hour": 0.2832,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 32,
+      "trips": 5884,
+      "mean_per_hour": 0.2688,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 108,
+      "trips": 5817,
+      "mean_per_hour": 0.2658,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 38,
+      "trips": 5739,
+      "mean_per_hour": 0.2622,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 185,
+      "trips": 5430,
+      "mean_per_hour": 0.2481,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 20,
+      "trips": 5410,
+      "mean_per_hour": 0.2472,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 19,
+      "trips": 5144,
+      "mean_per_hour": 0.235,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 54,
+      "trips": 5143,
+      "mean_per_hour": 0.235,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 67,
+      "trips": 5047,
+      "mean_per_hour": 0.2306,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 200,
+      "trips": 4931,
+      "mean_per_hour": 0.2253,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 122,
+      "trips": 4831,
+      "mean_per_hour": 0.2207,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 194,
+      "trips": 4750,
+      "mean_per_hour": 0.217,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 3,
+      "trips": 4738,
+      "mean_per_hour": 0.2165,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 94,
+      "trips": 4685,
+      "mean_per_hour": 0.2141,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 190,
+      "trips": 4292,
+      "mean_per_hour": 0.1961,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 53,
+      "trips": 4072,
+      "mean_per_hour": 0.186,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 171,
+      "trips": 4024,
+      "mean_per_hour": 0.1839,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 252,
+      "trips": 3677,
+      "mean_per_hour": 0.168,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 150,
+      "trips": 3670,
+      "mean_per_hour": 0.1677,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 11,
+      "trips": 3604,
+      "mean_per_hour": 0.1647,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 16,
+      "trips": 3550,
+      "mean_per_hour": 0.1622,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 192,
+      "trips": 3364,
+      "mean_per_hour": 0.1537,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 101,
+      "trips": 3296,
+      "mean_per_hour": 0.1506,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 98,
+      "trips": 3269,
+      "mean_per_hour": 0.1494,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 201,
+      "trips": 3229,
+      "mean_per_hour": 0.1475,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 178,
+      "trips": 3050,
+      "mean_per_hour": 0.1394,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 175,
+      "trips": 2850,
+      "mean_per_hour": 0.1302,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 183,
+      "trips": 2671,
+      "mean_per_hour": 0.122,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 9,
+      "trips": 2423,
+      "mean_per_hour": 0.1107,
+      "tier": "low",
+      "excluded_reason": null
+    },
+    {
+      "zone_id": 153,
+      "trips": 2144,
+      "mean_per_hour": 0.098,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 15,
+      "trips": 2051,
+      "mean_per_hour": 0.0937,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 64,
+      "trips": 2015,
+      "mean_per_hour": 0.0921,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 73,
+      "trips": 1777,
+      "mean_per_hour": 0.0812,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 154,
+      "trips": 1616,
+      "mean_per_hour": 0.0738,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 6,
+      "trips": 1594,
+      "mean_per_hour": 0.0728,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 128,
+      "trips": 1238,
+      "mean_per_hour": 0.0566,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 31,
+      "trips": 1230,
+      "mean_per_hour": 0.0562,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 240,
+      "trips": 1097,
+      "mean_per_hour": 0.0501,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 23,
+      "trips": 1046,
+      "mean_per_hour": 0.0478,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 96,
+      "trips": 898,
+      "mean_per_hour": 0.041,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 120,
+      "trips": 897,
+      "mean_per_hour": 0.041,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 57,
+      "trips": 841,
+      "mean_per_hour": 0.0384,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 46,
+      "trips": 784,
+      "mean_per_hour": 0.0358,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 8,
+      "trips": 678,
+      "mean_per_hour": 0.031,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 253,
+      "trips": 620,
+      "mean_per_hour": 0.0283,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 214,
+      "trips": 591,
+      "mean_per_hour": 0.027,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 221,
+      "trips": 570,
+      "mean_per_hour": 0.026,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 58,
+      "trips": 532,
+      "mean_per_hour": 0.0243,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 184,
+      "trips": 516,
+      "mean_per_hour": 0.0236,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 5,
+      "trips": 403,
+      "mean_per_hour": 0.0184,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 44,
+      "trips": 388,
+      "mean_per_hour": 0.0177,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 27,
+      "trips": 366,
+      "mean_per_hour": 0.0167,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 115,
+      "trips": 347,
+      "mean_per_hour": 0.0159,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 118,
+      "trips": 332,
+      "mean_per_hour": 0.0152,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 59,
+      "trips": 298,
+      "mean_per_hour": 0.0136,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 30,
+      "trips": 263,
+      "mean_per_hour": 0.012,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 251,
+      "trips": 253,
+      "mean_per_hour": 0.0116,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 172,
+      "trips": 246,
+      "mean_per_hour": 0.0112,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 206,
+      "trips": 194,
+      "mean_per_hour": 0.0089,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 111,
+      "trips": 186,
+      "mean_per_hour": 0.0085,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 156,
+      "trips": 177,
+      "mean_per_hour": 0.0081,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 2,
+      "trips": 128,
+      "mean_per_hour": 0.0058,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 245,
+      "trips": 122,
+      "mean_per_hour": 0.0056,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 109,
+      "trips": 120,
+      "mean_per_hour": 0.0055,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 187,
+      "trips": 94,
+      "mean_per_hour": 0.0043,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 176,
+      "trips": 94,
+      "mean_per_hour": 0.0043,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 204,
+      "trips": 53,
+      "mean_per_hour": 0.0024,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 84,
+      "trips": 52,
+      "mean_per_hour": 0.0024,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 199,
+      "trips": 47,
+      "mean_per_hour": 0.0021,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 99,
+      "trips": 20,
+      "mean_per_hour": 0.0009,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    },
+    {
+      "zone_id": 110,
+      "trips": 2,
+      "mean_per_hour": 0.0001,
+      "tier": "excluded",
+      "excluded_reason": "below_volume_floor"
+    }
+  ]
+}

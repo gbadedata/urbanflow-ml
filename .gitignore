@@ -2,6 +2,8 @@
 data/raw/
 data/interim/
 data/processed/
+data/validated/
+data/quarantine/
 *.parquet
 *.csv
 !tests/**/*.csv

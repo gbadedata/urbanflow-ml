@@ -10,12 +10,26 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
+import duckdb
 import typer
 
-from urbanflow.config import get_config
+from urbanflow.config import PROJECT_ROOT, get_config
 from urbanflow.ingest.download import build_snapshot, download_zone_lookup
 from urbanflow.ingest.manifest import SnapshotManifest
-from urbanflow.ingest.sources import source_files
+from urbanflow.ingest.sources import month_range, source_files
+from urbanflow.validation.contract import load_contract, parquet_schema
+from urbanflow.validation.quality import (
+    build_report,
+    check_conservation,
+    format_summary,
+    write_report,
+)
+from urbanflow.validation.validate import validate_month
+from urbanflow.validation.zones import (
+    forecastable_zones,
+    profile_zones,
+    write_zone_registry,
+)
 
 app = typer.Typer(add_completion=False, help="UrbanFlow ML pipeline commands.")
 
@@ -82,6 +96,98 @@ def manifest_show(snapshot_id: str) -> None:
     typer.echo(f"total rows:   {manifest.total_rows:,}")
     for record in manifest.files:
         typer.echo(f"  {record.filename}  {record.rows:>12,} rows  {record.sha256[:12]}")
+
+
+@app.command("contract-check")
+def contract_check() -> None:
+    """Check every raw file against the data contract."""
+    config = get_config()
+    contract = load_contract()
+    months = month_range(config.data.start_month, config.data.end_month)
+
+    failures = 0
+    for month in months:
+        path = config.raw_path / f"{config.data.service}_tripdata_{month}.parquet"
+        if not path.exists():
+            typer.echo(f"{month}  MISSING")
+            failures += 1
+            continue
+        problems = contract.check_schema(parquet_schema(path))
+        if problems:
+            failures += 1
+            typer.echo(f"{month}  FAIL")
+            for problem in problems:
+                typer.echo(f"          {problem}")
+
+    if failures:
+        typer.echo(f"\n{failures} of {len(months)} files fail the contract", err=True)
+        raise typer.Exit(code=1)
+    typer.echo(f"all {len(months)} files satisfy contract {contract.name} v{contract.version}")
+
+
+@app.command("validate")
+def validate(
+    dry_run: bool = typer.Option(False, "--dry-run", help="Count only; write nothing."),
+) -> None:
+    """Validate every month, quarantine failures and write the quality report."""
+    config = get_config()
+    contract = load_contract()
+    months = month_range(config.data.start_month, config.data.end_month)
+
+    con = duckdb.connect()
+    results = []
+    for month in months:
+        path = config.raw_path / f"{config.data.service}_tripdata_{month}.parquet"
+        problems = contract.check_schema(parquet_schema(path))
+        if problems:
+            typer.echo(f"{month}: contract violation, refusing to validate", err=True)
+            for problem in problems:
+                typer.echo(f"  {problem}", err=True)
+            raise typer.Exit(code=1)
+
+        result = validate_month(con, config, month, write=not dry_run)
+        results.append(result)
+        typer.echo(
+            f"{month}  in {result.rows_in:>10,}  out {result.rows_out:>10,}  "
+            f"quarantined {result.rows_quarantined:>8,} ({result.quarantine_rate:.3%})"
+        )
+
+    report = build_report(results)
+    typer.echo("")
+    typer.echo(format_summary(report))
+
+    lost = check_conservation(results)
+    if lost:
+        typer.echo("\nROWS UNACCOUNTED FOR — this is a bug, not a data finding:", err=True)
+        for line in lost:
+            typer.echo(f"  {line}", err=True)
+        raise typer.Exit(code=1)
+
+    if not dry_run:
+        path = write_report(report, PROJECT_ROOT / "reports" / "data_quality" / "validation.json")
+        typer.echo(f"\nreport: {path}")
+
+
+@app.command("zone-report")
+def zone_report() -> None:
+    """Profile zone volumes and write the forecastable-zone registry."""
+    config = get_config()
+    con = duckdb.connect()
+
+    profiles = profile_zones(con, config)
+    if not profiles:
+        typer.echo("no validated data — run `urbanflow validate` first", err=True)
+        raise typer.Exit(code=1)
+
+    keep = forecastable_zones(profiles, config)
+    path = write_zone_registry(profiles, config, PROJECT_ROOT / "reports" / "zone_registry.json")
+
+    total = sum(p.trips for p in profiles)
+    kept_trips = sum(p.trips for p in profiles if p.zone_id in set(keep))
+    typer.echo(f"zones profiled:     {len(profiles)}")
+    typer.echo(f"zones forecastable: {len(keep)}")
+    typer.echo(f"trips retained:     {kept_trips / total:.4%}" if total else "no trips")
+    typer.echo(f"registry:           {path}")
 
 
 if __name__ == "__main__":
