@@ -5,6 +5,12 @@ a deployed prediction API with measured uncertainty.
 
 [![CI](https://github.com/gbadedata/urbanflow-ml/actions/workflows/ci.yml/badge.svg)](https://github.com/gbadedata/urbanflow-ml/actions/workflows/ci.yml)
 
+**Live API:** https://urbanflow-ml.onrender.com/docs
+
+Hosted on a free tier that sleeps when idle. The first request after a quiet
+period takes 30 to 60 seconds while the service and its serverless database
+wake. Subsequent requests respond normally.
+
 The system predicts how many yellow taxi pickups will occur in each New York City
 taxi zone during each of the next 1, 3 and 6 hours, and publishes a prediction
 interval alongside every point forecast. It is built on 103.5 million trip records
