@@ -1,0 +1,24 @@
+# Data never belongs in the image; the API reads from PostgreSQL.
+data/
+reports/
+notebooks/
+tests/
+
+# Build and environment artefacts
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+mlruns/
+
+# Local config and VCS
+.git/
+.github/
+.env
+.env.local
+*.md
+!README.md

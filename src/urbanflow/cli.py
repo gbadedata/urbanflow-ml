@@ -518,5 +518,184 @@ def intervals_cmd(
         raise typer.Exit(code=1)
 
 
+@app.command("train")
+def train_cmd(
+    max_iter: int = typer.Option(400, "--max-iter", help="Champion boosting iterations."),
+) -> None:
+    """Fit and persist a champion per horizon, with dispersion and provenance."""
+    import json
+
+    from urbanflow.models.champion import fit_champion
+    from urbanflow.models.evaluate import load_block
+    from urbanflow.models.intervals import estimate_dispersion
+    from urbanflow.models.persist import ModelBundle
+
+    config = get_config()
+    feature_dir = config.validated_path.parent / "features"
+    summary = json.loads((PROJECT_ROOT / "reports" / "feature_summary.json").read_text())
+
+    manifests = sorted(config.manifest_path.glob("*.json"))
+    snapshot_id = manifests[-1].stem if manifests else "unknown"
+
+    con = connect()
+    model_dir = PROJECT_ROOT / "models"
+
+    for entry in summary:
+        horizon = entry["horizon_hours"]
+        path = feature_dir / f"features_h{horizon}.parquet"
+        con.execute(f"CREATE OR REPLACE TEMP TABLE f AS SELECT * FROM read_parquet('{path}')")
+        span = con.execute("SELECT MIN(target_hour), MAX(target_hour) FROM f").fetchone()
+        assert span is not None
+        bounds = compute_bounds(span[0], span[1], config)
+        assign_blocks(con, "f", bounds)
+
+        cols = entry["features"]
+        train_x, train_y, _ = load_block(con, "f", "train", cols)
+        typer.echo(f"h={horizon}h fitting on {len(train_y):,} rows")
+        model = fit_champion(train_x, train_y, cols, max_iter=max_iter)
+
+        cal_x, cal_y, _ = load_block(con, "f", CALIBRATE, cols)
+        dispersion = estimate_dispersion(cal_y, model.predict(cal_x))
+
+        bundle = ModelBundle(
+            model=model,
+            horizon_hours=horizon,
+            feature_columns=cols,
+            feature_cutoff_minutes=config.features.feature_cutoff_minutes,
+            anchor_offset_hours=entry["anchor_offset_hours"],
+            dispersion=dispersion,
+            snapshot_id=snapshot_id,
+            train_start=bounds.train_start.isoformat(),
+            train_end=bounds.train_end.isoformat(),
+        )
+        saved = bundle.save(model_dir)
+        typer.echo(f"  {bundle.model_version}  k={dispersion:.2f}  -> {saved}")
+
+    typer.echo(f"\nmodels: {model_dir}")
+
+
+@app.command("load-db")
+def load_db_cmd(
+    recent_hours: int = typer.Option(
+        1000,
+        "--recent-hours",
+        help=(
+            "Hours of grid history to load per zone. Serving needs about 700 "
+            "(four weeks for the trailing median plus the longest window). "
+            "Use 0 to load the full grid."
+        ),
+    ),
+) -> None:
+    """Create the schema and load zones, grid and excluded hours into PostgreSQL."""
+    import json
+
+    from sqlalchemy import text
+
+    from urbanflow.serving.repository import apply_schema, make_engine
+
+    config = get_config()
+    grid_path = config.validated_path.parent / "grid" / "zone_hour.parquet"
+    registry_path = PROJECT_ROOT / "reports" / "zone_registry.json"
+    if not grid_path.exists() or not registry_path.exists():
+        typer.echo("run `build-grid` and `zone-report` first", err=True)
+        raise typer.Exit(code=1)
+
+    engine = make_engine()
+    apply_schema(engine, PROJECT_ROOT / "sql" / "schema.sql")
+    typer.echo("schema applied")
+
+    registry = json.loads(registry_path.read_text())
+    lookup_path = config.raw_path / "taxi_zone_lookup.csv"
+    con = connect()
+    names = {}
+    if lookup_path.exists():
+        for row in con.execute(
+            f"SELECT LocationID, Borough, Zone FROM read_csv_auto('{lookup_path}')"
+        ).fetchall():
+            names[int(row[0])] = (row[1], row[2])
+
+    with engine.begin() as conn:
+        conn.execute(text("DELETE FROM zone_hour"))
+        conn.execute(text("DELETE FROM taxi_zones"))
+        for zone in registry["zones"]:
+            borough, name = names.get(zone["zone_id"], (None, None))
+            forecastable = zone["tier"] != "excluded"
+            conn.execute(
+                text("""
+                    INSERT INTO taxi_zones (location_id, borough, zone_name, service_zone,
+                        is_forecastable, exclusion_reason, demand_tier, mean_per_hour,
+                        trips_observed)
+                    VALUES (:id, :borough, :name, NULL, :forecastable, :reason, :tier,
+                        :mean, :trips)
+                """),
+                {
+                    "id": zone["zone_id"],
+                    "borough": borough,
+                    "name": name,
+                    "forecastable": forecastable,
+                    "reason": zone["excluded_reason"],
+                    "tier": zone["tier"],
+                    "mean": zone["mean_per_hour"],
+                    "trips": zone["trips"],
+                },
+            )
+    typer.echo(f"loaded {len(registry['zones'])} zones")
+
+    # Serving reads a fixed window of history per zone, never the whole grid, so
+    # loading everything wastes storage that free-tier PostgreSQL does not have.
+    # The full grid stays in Parquet for training and analysis.
+    if recent_hours > 0:
+        cutoff_row = con.execute(f"""
+            SELECT MAX(hour_utc) - INTERVAL '{recent_hours} hour'
+            FROM read_parquet('{grid_path}')
+        """).fetchone()
+        assert cutoff_row is not None
+        where = f"WHERE hour_utc > TIMESTAMPTZ '{cutoff_row[0]}'"
+        typer.echo(f"loading the most recent {recent_hours} hours per zone")
+    else:
+        where = ""
+        typer.echo("loading the full grid")
+
+    rows = con.execute(f"""
+        SELECT location_id, hour_utc, pickup_count
+        FROM read_parquet('{grid_path}') {where} ORDER BY location_id, hour_utc
+    """).fetchall()
+
+    with engine.begin() as conn:
+        batch = []
+        for row in rows:
+            batch.append({"z": int(row[0]), "h": row[1], "c": int(row[2])})
+            if len(batch) >= 20000:
+                conn.execute(
+                    text(
+                        "INSERT INTO zone_hour (location_id, hour_utc, pickup_count) "
+                        "VALUES (:z, :h, :c)"
+                    ),
+                    batch,
+                )
+                batch = []
+        if batch:
+            conn.execute(
+                text(
+                    "INSERT INTO zone_hour (location_id, hour_utc, pickup_count) "
+                    "VALUES (:z, :h, :c)"
+                ),
+                batch,
+            )
+    typer.echo(f"loaded {len(rows):,} grid rows")
+
+
+@app.command("serve")
+def serve_cmd(
+    host: str = typer.Option("0.0.0.0", "--host"),
+    port: int = typer.Option(8000, "--port"),
+    reload: bool = typer.Option(False, "--reload"),
+) -> None:
+    """Run the API."""
+    import uvicorn
+
+    uvicorn.run("urbanflow.serving.app:app", host=host, port=port, reload=reload)
+
+
 if __name__ == "__main__":
     app()

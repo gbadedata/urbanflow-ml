@@ -33,3 +33,48 @@ jobs:
 
       - name: Tests
         run: uv run pytest -m "not network" --cov=urbanflow --cov-report=term-missing
+
+  image:
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@v4
+
+      # The Dockerfile copies models/, which is gitignored because model
+      # artefacts do not belong in version control. A placeholder keeps this
+      # honest: the job proves the image builds and the process starts, not
+      # that it serves forecasts. Deployment builds from a tree with real
+      # artefacts produced by `urbanflow train`.
+      - name: Create placeholder model directory
+        run: mkdir -p models && touch models/.gitkeep
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          push: false
+          load: true
+          tags: urbanflow-ml:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify the container starts and reports liveness
+        run: |
+          docker run -d --name urbanflow-ci -p 8000:8000 \
+            -e DATABASE_URL=postgresql+psycopg://none:none@127.0.0.1:5432/none \
+            urbanflow-ml:ci
+          for i in $(seq 1 30); do
+            if curl -fs http://localhost:8000/health > /dev/null; then
+              echo "liveness confirmed after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "container did not become healthy"
+          docker logs urbanflow-ci
+          exit 1
+
+      - name: Container logs
+        if: always()
+        run: docker logs urbanflow-ci || true

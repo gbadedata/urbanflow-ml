@@ -16,5 +16,22 @@ services:
       timeout: 5s
       retries: 5
 
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: urbanflow-api
+    # Only started with `--profile api`, so `docker compose up -d` during
+    # development brings up the database alone and leaves the API to run from
+    # the working tree with reload.
+    profiles: ["api"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-urbanflow}:${POSTGRES_PASSWORD:-urbanflow}@postgres:5432/${POSTGRES_DB:-urbanflow}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   pgdata:
