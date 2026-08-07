@@ -63,6 +63,24 @@ class SplitConfig(BaseModel):
     gap_hours: int = Field(ge=0)
 
 
+class GatesConfig(BaseModel):
+    """Promotion criteria, fixed before any champion was trained."""
+
+    metric: str
+    min_relative_improvement: float = Field(gt=0)
+    gated_tiers: list[str]
+    max_volume_bias_deviation: float = Field(gt=0)
+    max_tier_degradation: float = Field(gt=0)
+
+    @field_validator("metric")
+    @classmethod
+    def _check_metric(cls, v: str) -> str:
+        allowed = {"poisson_deviance", "mae", "rmse"}
+        if v not in allowed:
+            raise ValueError(f"gate metric must be one of {sorted(allowed)}, got {v!r}")
+        return v
+
+
 class ValidationConfig(BaseModel):
     max_trip_duration_hours: int = Field(gt=0)
     dst_ambiguous_policy: str = "earliest"
@@ -99,6 +117,7 @@ class Config(BaseModel):
     split: SplitConfig
     demand_tiers: DemandTiersConfig
     validation: ValidationConfig
+    gates: GatesConfig
 
     @property
     def raw_path(self) -> Path:

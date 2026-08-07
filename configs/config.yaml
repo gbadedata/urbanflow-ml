@@ -76,6 +76,22 @@ demand_tiers:
   high_min: 20.0
   medium_min: 2.0
 
+gates:
+  # Promotion gate for the champion model. See reports/gate_decision.md for the
+  # evidence and reasoning; the decision was recorded before any champion ran.
+  #
+  # Poisson deviance rather than MAE: MAE is minimised by the conditional median,
+  # and Baseline B is a trailing median, so MAE structurally favours the
+  # benchmark on sparse count data. Deviance is minimised by the conditional
+  # mean, which is the quantity a dispatcher acts on.
+  metric: "poisson_deviance"
+  min_relative_improvement: 0.10
+  gated_tiers: ["high", "medium"]
+  # A champion may not buy deviance with systematic over-forecasting.
+  max_volume_bias_deviation: 0.05
+  # No tier may get materially worse than the benchmark it replaces.
+  max_tier_degradation: 0.10
+
 validation:
   # Rows failing any rule are quarantined with a reason code and counted; they are
   # never silently dropped (spec §6.1).

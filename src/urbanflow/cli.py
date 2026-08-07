@@ -27,6 +27,19 @@ from urbanflow.features.grid import (
 from urbanflow.ingest.download import build_snapshot, download_zone_lookup
 from urbanflow.ingest.manifest import SnapshotManifest
 from urbanflow.ingest.sources import month_range, source_files
+from urbanflow.models.evaluate import (
+    evaluate_baselines,
+    format_results,
+    load_zone_tiers,
+)
+from urbanflow.models.split import (
+    CALIBRATE,
+    TEST,
+    assert_no_temporal_overlap,
+    assign_blocks,
+    block_counts,
+    compute_bounds,
+)
 from urbanflow.validation.contract import load_contract, parquet_schema
 from urbanflow.validation.quality import (
     build_report,
@@ -318,6 +331,71 @@ def build_features_cmd() -> None:
     path = PROJECT_ROOT / "reports" / "feature_summary.json"
     path.write_text(json.dumps(summary, indent=2))
     typer.echo(f"\nsummary: {path}")
+
+
+@app.command("baselines")
+def baselines_cmd(
+    frozen_test: bool = typer.Option(
+        False,
+        "--frozen-test",
+        help="Read the FROZEN test block. Spec §6.2: once, at release.",
+    ),
+    champion: bool = typer.Option(
+        False, "--champion", help="Also fit the GBM champion and apply the promotion gate."
+    ),
+) -> None:
+    """Fit on train and evaluate the ladder on the calibrate block."""
+    import json
+
+    config = get_config()
+    feature_dir = config.validated_path.parent / "features"
+    registry = PROJECT_ROOT / "reports" / "zone_registry.json"
+    if not registry.exists():
+        typer.echo("no zone registry — run `urbanflow zone-report` first", err=True)
+        raise typer.Exit(code=1)
+
+    eval_block = TEST if frozen_test else CALIBRATE
+    if frozen_test:
+        typer.echo("READING THE FROZEN TEST BLOCK. This should happen once, at release.")
+
+    zone_tiers = load_zone_tiers(registry)
+    summary = json.loads((PROJECT_ROOT / "reports" / "feature_summary.json").read_text())
+    con = connect()
+    report: dict[str, object] = {"eval_block": eval_block, "horizons": {}}
+
+    for entry in summary:
+        horizon = entry["horizon_hours"]
+        path = feature_dir / f"features_h{horizon}.parquet"
+        if not path.exists():
+            typer.echo(f"missing {path} — run `urbanflow build-features`", err=True)
+            raise typer.Exit(code=1)
+
+        con.execute(f"CREATE OR REPLACE TEMP TABLE f AS SELECT * FROM read_parquet('{path}')")
+        span = con.execute("SELECT MIN(target_hour), MAX(target_hour) FROM f").fetchone()
+        assert span is not None
+        bounds = compute_bounds(span[0], span[1], config)
+        assign_blocks(con, "f", bounds)
+        assert_no_temporal_overlap(con, "f")
+
+        counts = block_counts(con, "f")
+        typer.echo(
+            f"\nh={horizon}h blocks: " + "  ".join(f"{k}={v:,}" for k, v in sorted(counts.items()))
+        )
+
+        results = evaluate_baselines(con, config, "f", entry["features"], zone_tiers, eval_block)
+        typer.echo(format_results(results, horizon))
+
+        report["horizons"][str(horizon)] = {  # type: ignore[index]
+            "bounds": bounds.to_dict(),
+            "block_counts": counts,
+            "results": {name: [m.to_dict() for m in metrics] for name, metrics in results.items()},
+        }
+
+    stem = "champion" if champion else "baselines"
+    name = f"{stem}_test.json" if frozen_test else f"{stem}_calibrate.json"
+    path = PROJECT_ROOT / "reports" / name
+    path.write_text(json.dumps(report, indent=2))
+    typer.echo(f"\nreport: {path}")
 
 
 if __name__ == "__main__":
