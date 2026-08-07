@@ -29,8 +29,6 @@ htmlcov/
 # MLflow / models
 mlruns/
 models/*.pkl
-models/*.joblib
-models/*.json
 
 # Env
 .env
