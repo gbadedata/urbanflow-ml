@@ -10,6 +10,7 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
+import numpy as np
 import typer
 
 from urbanflow.config import PROJECT_ROOT, get_config
@@ -27,10 +28,18 @@ from urbanflow.features.grid import (
 from urbanflow.ingest.download import build_snapshot, download_zone_lookup
 from urbanflow.ingest.manifest import SnapshotManifest
 from urbanflow.ingest.sources import month_range, source_files
+from urbanflow.models.baselines import BASELINE_B
+from urbanflow.models.champion import CHAMPION, evaluate_gate, format_gate
 from urbanflow.models.evaluate import (
     evaluate_baselines,
     format_results,
     load_zone_tiers,
+)
+from urbanflow.models.intervals import (
+    check_coverage_gate,
+    fit_quantiles,
+    format_coverage,
+    measure_coverage_by_tier,
 )
 from urbanflow.models.split import (
     CALIBRATE,
@@ -343,6 +352,11 @@ def baselines_cmd(
     champion: bool = typer.Option(
         False, "--champion", help="Also fit the GBM champion and apply the promotion gate."
     ),
+    max_iter: int = typer.Option(
+        400,
+        "--max-iter",
+        help="Champion boosting iterations. Raise if early stopping never fires.",
+    ),
 ) -> None:
     """Fit on train and evaluate the ladder on the calibrate block."""
     import json
@@ -382,13 +396,31 @@ def baselines_cmd(
             f"\nh={horizon}h blocks: " + "  ".join(f"{k}={v:,}" for k, v in sorted(counts.items()))
         )
 
-        results = evaluate_baselines(con, config, "f", entry["features"], zone_tiers, eval_block)
+        results = evaluate_baselines(
+            con,
+            config,
+            "f",
+            entry["features"],
+            zone_tiers,
+            eval_block,
+            with_champion=champion,
+            max_iter=max_iter,
+        )
         typer.echo(format_results(results, horizon))
+
+        gate = None
+        if champion:
+            if CHAMPION not in results:
+                typer.echo(f"champion requested but {CHAMPION!r} is absent from results", err=True)
+                raise typer.Exit(code=1)
+            gate = evaluate_gate(config, horizon, results[CHAMPION], results[BASELINE_B])
+            typer.echo(format_gate(gate))
 
         report["horizons"][str(horizon)] = {  # type: ignore[index]
             "bounds": bounds.to_dict(),
             "block_counts": counts,
             "results": {name: [m.to_dict() for m in metrics] for name, metrics in results.items()},
+            "gate": gate.to_dict() if gate else None,
         }
 
     stem = "champion" if champion else "baselines"
@@ -396,6 +428,78 @@ def baselines_cmd(
     path = PROJECT_ROOT / "reports" / name
     path.write_text(json.dumps(report, indent=2))
     typer.echo(f"\nreport: {path}")
+
+
+@app.command("intervals")
+def intervals_cmd(
+    max_iter: int = typer.Option(300, "--max-iter", help="Boosting iterations per quantile."),
+    frozen_test: bool = typer.Option(
+        False, "--frozen-test", help="Read the FROZEN test block. Spec §6.2: once, at release."
+    ),
+) -> None:
+    """Fit quantile intervals and measure empirical coverage."""
+    import json
+
+    from urbanflow.models.evaluate import load_block
+
+    config = get_config()
+    feature_dir = config.validated_path.parent / "features"
+    registry = PROJECT_ROOT / "reports" / "zone_registry.json"
+    if not registry.exists():
+        typer.echo("no zone registry — run `urbanflow zone-report` first", err=True)
+        raise typer.Exit(code=1)
+
+    eval_block = TEST if frozen_test else CALIBRATE
+    if frozen_test:
+        typer.echo("READING THE FROZEN TEST BLOCK. This should happen once, at release.")
+
+    zone_tiers = load_zone_tiers(registry)
+    summary = json.loads((PROJECT_ROOT / "reports" / "feature_summary.json").read_text())
+    con = connect()
+    report: dict[str, object] = {"eval_block": eval_block, "horizons": {}}
+    all_passed = True
+
+    for entry in summary:
+        horizon = entry["horizon_hours"]
+        path = feature_dir / f"features_h{horizon}.parquet"
+        con.execute(f"CREATE OR REPLACE TEMP TABLE f AS SELECT * FROM read_parquet('{path}')")
+        span = con.execute("SELECT MIN(target_hour), MAX(target_hour) FROM f").fetchone()
+        assert span is not None
+        assign_blocks(con, "f", compute_bounds(span[0], span[1], config))
+
+        cols = entry["features"]
+        train_x, train_y, _ = load_block(con, "f", "train", cols)
+        eval_x, eval_y, eval_zones = load_block(con, "f", eval_block, cols)
+        tiers = np.array([zone_tiers.get(int(z), "low") for z in eval_zones])
+
+        typer.echo(f"\nh={horizon}h fitting quantile models on {len(train_y):,} rows")
+        model = fit_quantiles(train_x, train_y, cols, max_iter=max_iter)
+        lower, upper = model.predict_interval(eval_x)
+
+        results = measure_coverage_by_tier(eval_y, lower, upper, tiers)
+        typer.echo(format_coverage(results, horizon))
+
+        passed, reasons = check_coverage_gate(
+            results, config.gates.gated_tiers, config.gates.coverage_tolerance
+        )
+        all_passed = all_passed and passed
+        typer.echo(f"\n  coverage gate: {'PASS' if passed else 'FAIL'}")
+        for reason in reasons:
+            typer.echo(f"  - {reason}")
+
+        report["horizons"][str(horizon)] = {  # type: ignore[index]
+            "coverage": [r.to_dict() for r in results],
+            "gate_passed": passed,
+            "reasons": reasons,
+            "max_iter": max_iter,
+        }
+
+    name = "intervals_test.json" if frozen_test else "intervals_calibrate.json"
+    out = PROJECT_ROOT / "reports" / name
+    out.write_text(json.dumps(report, indent=2))
+    typer.echo(f"\nreport: {out}")
+    if not all_passed:
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":

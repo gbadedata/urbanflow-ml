@@ -65,6 +65,7 @@ def evaluate_baselines(
     zone_tiers: dict[int, str],
     eval_block: str = CALIBRATE,
     with_champion: bool = False,
+    max_iter: int = 400,
 ) -> dict[str, list[TierMetrics]]:
     """Fit on train, evaluate every baseline on ``eval_block``."""
     train_features, train_target, _ = load_block(con, table, TRAIN, feature_cols)
@@ -80,7 +81,7 @@ def evaluate_baselines(
     models.append(fit_poisson(train_features, train_target, feature_cols))
     if with_champion:
         logger.info("fitting champion GBM on %s rows", f"{len(train_target):,}")
-        models.append(fit_champion(train_features, train_target, feature_cols))
+        models.append(fit_champion(train_features, train_target, feature_cols, max_iter=max_iter))
 
     results: dict[str, list[TierMetrics]] = {}
     for model in models:

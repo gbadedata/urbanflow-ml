@@ -1,0 +1,731 @@
+{
+  "eval_block": "calibrate",
+  "horizons": {
+    "1": {
+      "bounds": {
+        "train": [
+          "2023-01-29T05:00:00+00:00",
+          "2025-03-10T22:00:00+00:00"
+        ],
+        "calibrate": [
+          "2025-03-11T04:00:00+00:00",
+          "2025-05-05T22:00:00+00:00"
+        ],
+        "test": [
+          "2025-05-06T04:00:00+00:00",
+          "2025-07-01T04:00:00+00:00"
+        ],
+        "gap_hours": 6
+      },
+      "block_counts": {
+        "train": 4019057,
+        "calibrate": 290346,
+        "gap": 2604,
+        "test": 291648
+      },
+      "results": {
+        "seasonal_naive": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 5.9346,
+            "rmse": 16.728,
+            "poisson_deviance": 8.4465,
+            "wape": 0.2309,
+            "zero_hit_rate": 0.5888,
+            "mean_actual": 25.7064,
+            "mean_predicted": 25.4558,
+            "volume_bias": 0.9903
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 20.544,
+            "rmse": 35.2959,
+            "poisson_deviance": 8.7606,
+            "wape": 0.1925,
+            "zero_hit_rate": 0.3338,
+            "mean_actual": 106.7034,
+            "mean_predicted": 105.8047,
+            "volume_bias": 0.9916
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 4.2492,
+            "rmse": 6.6002,
+            "poisson_deviance": 6.3657,
+            "wape": 0.4311,
+            "zero_hit_rate": 0.3822,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.6017,
+            "volume_bias": 0.9741
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.2633,
+            "rmse": 2.1188,
+            "poisson_deviance": 8.8954,
+            "wape": 0.8125,
+            "zero_hit_rate": 0.5996,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.533,
+            "volume_bias": 0.9859
+          }
+        ],
+        "hour_of_week_median": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 5.3735,
+            "rmse": 15.1544,
+            "poisson_deviance": 5.1798,
+            "wape": 0.209,
+            "zero_hit_rate": 0.493,
+            "mean_actual": 25.7064,
+            "mean_predicted": 24.9811,
+            "volume_bias": 0.9718
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 18.978,
+            "rmse": 32.0336,
+            "poisson_deviance": 7.1398,
+            "wape": 0.1779,
+            "zero_hit_rate": 0.1905,
+            "mean_actual": 106.7034,
+            "mean_predicted": 104.4234,
+            "volume_bias": 0.9786
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 3.6546,
+            "rmse": 5.7458,
+            "poisson_deviance": 3.4117,
+            "wape": 0.3708,
+            "zero_hit_rate": 0.246,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.1619,
+            "volume_bias": 0.9295
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.0636,
+            "rmse": 1.7649,
+            "poisson_deviance": 4.9674,
+            "wape": 0.684,
+            "zero_hit_rate": 0.506,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.3669,
+            "volume_bias": 0.8791
+          }
+        ],
+        "poisson_regression": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 5.2241,
+            "rmse": 14.4008,
+            "poisson_deviance": 2.6241,
+            "wape": 0.2032,
+            "zero_hit_rate": 0.3202,
+            "mean_actual": 25.7064,
+            "mean_predicted": 25.6992,
+            "volume_bias": 0.9997
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 18.2659,
+            "rmse": 30.416,
+            "poisson_deviance": 6.1556,
+            "wape": 0.1712,
+            "zero_hit_rate": 0.0,
+            "mean_actual": 106.7034,
+            "mean_predicted": 106.7812,
+            "volume_bias": 1.0007
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 3.597,
+            "rmse": 5.5904,
+            "poisson_deviance": 2.4368,
+            "wape": 0.3649,
+            "zero_hit_rate": 0.0,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.7511,
+            "volume_bias": 0.9892
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.0868,
+            "rmse": 1.7188,
+            "poisson_deviance": 1.4357,
+            "wape": 0.699,
+            "zero_hit_rate": 0.3363,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.5445,
+            "volume_bias": 0.9933
+          }
+        ],
+        "gbm_poisson": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 4.5966,
+            "rmse": 12.9945,
+            "poisson_deviance": 2.1374,
+            "wape": 0.1788,
+            "zero_hit_rate": 0.4399,
+            "mean_actual": 25.7064,
+            "mean_predicted": 25.3936,
+            "volume_bias": 0.9878
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 15.7311,
+            "rmse": 27.4116,
+            "poisson_deviance": 4.4748,
+            "wape": 0.1474,
+            "zero_hit_rate": 0.0502,
+            "mean_actual": 106.7034,
+            "mean_predicted": 105.3835,
+            "volume_bias": 0.9876
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 3.3404,
+            "rmse": 5.2012,
+            "poisson_deviance": 2.142,
+            "wape": 0.3389,
+            "zero_hit_rate": 0.1124,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.6103,
+            "volume_bias": 0.9749
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.0286,
+            "rmse": 1.6221,
+            "poisson_deviance": 1.3164,
+            "wape": 0.6615,
+            "zero_hit_rate": 0.457,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.5778,
+            "volume_bias": 1.0147
+          }
+        ]
+      },
+      "gate": {
+        "horizon_hours": 1,
+        "metric": "poisson_deviance",
+        "passed": true,
+        "ships": "gbm_poisson",
+        "improvements": {
+          "all": 0.5874,
+          "high": 0.3733,
+          "medium": 0.3722,
+          "low": 0.735
+        },
+        "bias_violations": [],
+        "degradations": [],
+        "reasons": [
+          "champion clears the gate on high, medium with no bias violation or tier degradation"
+        ]
+      }
+    },
+    "3": {
+      "bounds": {
+        "train": [
+          "2023-01-29T05:00:00+00:00",
+          "2025-03-10T22:00:00+00:00"
+        ],
+        "calibrate": [
+          "2025-03-11T04:00:00+00:00",
+          "2025-05-05T22:00:00+00:00"
+        ],
+        "test": [
+          "2025-05-06T04:00:00+00:00",
+          "2025-07-01T04:00:00+00:00"
+        ],
+        "gap_hours": 6
+      },
+      "block_counts": {
+        "calibrate": 290346,
+        "train": 4019057,
+        "gap": 2604,
+        "test": 291648
+      },
+      "results": {
+        "seasonal_naive": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 5.9346,
+            "rmse": 16.728,
+            "poisson_deviance": 8.4465,
+            "wape": 0.2309,
+            "zero_hit_rate": 0.5888,
+            "mean_actual": 25.7064,
+            "mean_predicted": 25.4558,
+            "volume_bias": 0.9903
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 20.544,
+            "rmse": 35.2959,
+            "poisson_deviance": 8.7606,
+            "wape": 0.1925,
+            "zero_hit_rate": 0.3338,
+            "mean_actual": 106.7034,
+            "mean_predicted": 105.8047,
+            "volume_bias": 0.9916
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 4.2492,
+            "rmse": 6.6002,
+            "poisson_deviance": 6.3657,
+            "wape": 0.4311,
+            "zero_hit_rate": 0.3822,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.6017,
+            "volume_bias": 0.9741
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.2633,
+            "rmse": 2.1188,
+            "poisson_deviance": 8.8954,
+            "wape": 0.8125,
+            "zero_hit_rate": 0.5996,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.533,
+            "volume_bias": 0.9859
+          }
+        ],
+        "hour_of_week_median": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 5.3735,
+            "rmse": 15.1544,
+            "poisson_deviance": 5.1798,
+            "wape": 0.209,
+            "zero_hit_rate": 0.493,
+            "mean_actual": 25.7064,
+            "mean_predicted": 24.9811,
+            "volume_bias": 0.9718
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 18.978,
+            "rmse": 32.0336,
+            "poisson_deviance": 7.1398,
+            "wape": 0.1779,
+            "zero_hit_rate": 0.1905,
+            "mean_actual": 106.7034,
+            "mean_predicted": 104.4234,
+            "volume_bias": 0.9786
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 3.6546,
+            "rmse": 5.7458,
+            "poisson_deviance": 3.4117,
+            "wape": 0.3708,
+            "zero_hit_rate": 0.246,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.1619,
+            "volume_bias": 0.9295
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.0636,
+            "rmse": 1.7649,
+            "poisson_deviance": 4.9674,
+            "wape": 0.684,
+            "zero_hit_rate": 0.506,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.3669,
+            "volume_bias": 0.8791
+          }
+        ],
+        "poisson_regression": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 5.1786,
+            "rmse": 14.332,
+            "poisson_deviance": 2.6,
+            "wape": 0.2015,
+            "zero_hit_rate": 0.3183,
+            "mean_actual": 25.7064,
+            "mean_predicted": 25.675,
+            "volume_bias": 0.9988
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 18.0334,
+            "rmse": 30.2612,
+            "poisson_deviance": 6.0126,
+            "wape": 0.169,
+            "zero_hit_rate": 0.0,
+            "mean_actual": 106.7034,
+            "mean_predicted": 106.6573,
+            "volume_bias": 0.9996
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 3.6152,
+            "rmse": 5.617,
+            "poisson_deviance": 2.4582,
+            "wape": 0.3668,
+            "zero_hit_rate": 0.0,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.7508,
+            "volume_bias": 0.9892
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.0898,
+            "rmse": 1.7226,
+            "poisson_deviance": 1.4411,
+            "wape": 0.7009,
+            "zero_hit_rate": 0.3344,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.5489,
+            "volume_bias": 0.9961
+          }
+        ],
+        "gbm_poisson": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 4.6556,
+            "rmse": 13.1582,
+            "poisson_deviance": 2.1786,
+            "wape": 0.1811,
+            "zero_hit_rate": 0.4311,
+            "mean_actual": 25.7064,
+            "mean_predicted": 25.37,
+            "volume_bias": 0.9869
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 15.9618,
+            "rmse": 27.7571,
+            "poisson_deviance": 4.6056,
+            "wape": 0.1496,
+            "zero_hit_rate": 0.0266,
+            "mean_actual": 106.7034,
+            "mean_predicted": 105.3124,
+            "volume_bias": 0.987
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 3.3801,
+            "rmse": 5.281,
+            "poisson_deviance": 2.1813,
+            "wape": 0.3429,
+            "zero_hit_rate": 0.1011,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.5829,
+            "volume_bias": 0.9722
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.0326,
+            "rmse": 1.6285,
+            "poisson_deviance": 1.3266,
+            "wape": 0.6641,
+            "zero_hit_rate": 0.4484,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.5718,
+            "volume_bias": 1.0109
+          }
+        ]
+      },
+      "gate": {
+        "horizon_hours": 3,
+        "metric": "poisson_deviance",
+        "passed": true,
+        "ships": "gbm_poisson",
+        "improvements": {
+          "all": 0.5794,
+          "high": 0.3549,
+          "medium": 0.3606,
+          "low": 0.7329
+        },
+        "bias_violations": [],
+        "degradations": [],
+        "reasons": [
+          "champion clears the gate on high, medium with no bias violation or tier degradation"
+        ]
+      }
+    },
+    "6": {
+      "bounds": {
+        "train": [
+          "2023-01-29T05:00:00+00:00",
+          "2025-03-10T22:00:00+00:00"
+        ],
+        "calibrate": [
+          "2025-03-11T04:00:00+00:00",
+          "2025-05-05T22:00:00+00:00"
+        ],
+        "test": [
+          "2025-05-06T04:00:00+00:00",
+          "2025-07-01T04:00:00+00:00"
+        ],
+        "gap_hours": 6
+      },
+      "block_counts": {
+        "gap": 2604,
+        "test": 291648,
+        "calibrate": 290346,
+        "train": 4019057
+      },
+      "results": {
+        "seasonal_naive": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 5.9346,
+            "rmse": 16.728,
+            "poisson_deviance": 8.4465,
+            "wape": 0.2309,
+            "zero_hit_rate": 0.5888,
+            "mean_actual": 25.7064,
+            "mean_predicted": 25.4558,
+            "volume_bias": 0.9903
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 20.544,
+            "rmse": 35.2959,
+            "poisson_deviance": 8.7606,
+            "wape": 0.1925,
+            "zero_hit_rate": 0.3338,
+            "mean_actual": 106.7034,
+            "mean_predicted": 105.8047,
+            "volume_bias": 0.9916
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 4.2492,
+            "rmse": 6.6002,
+            "poisson_deviance": 6.3657,
+            "wape": 0.4311,
+            "zero_hit_rate": 0.3822,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.6017,
+            "volume_bias": 0.9741
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.2633,
+            "rmse": 2.1188,
+            "poisson_deviance": 8.8954,
+            "wape": 0.8125,
+            "zero_hit_rate": 0.5996,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.533,
+            "volume_bias": 0.9859
+          }
+        ],
+        "hour_of_week_median": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 5.3735,
+            "rmse": 15.1544,
+            "poisson_deviance": 5.1798,
+            "wape": 0.209,
+            "zero_hit_rate": 0.493,
+            "mean_actual": 25.7064,
+            "mean_predicted": 24.9811,
+            "volume_bias": 0.9718
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 18.978,
+            "rmse": 32.0336,
+            "poisson_deviance": 7.1398,
+            "wape": 0.1779,
+            "zero_hit_rate": 0.1905,
+            "mean_actual": 106.7034,
+            "mean_predicted": 104.4234,
+            "volume_bias": 0.9786
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 3.6546,
+            "rmse": 5.7458,
+            "poisson_deviance": 3.4117,
+            "wape": 0.3708,
+            "zero_hit_rate": 0.246,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.1619,
+            "volume_bias": 0.9295
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.0636,
+            "rmse": 1.7649,
+            "poisson_deviance": 4.9674,
+            "wape": 0.684,
+            "zero_hit_rate": 0.506,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.3669,
+            "volume_bias": 0.8791
+          }
+        ],
+        "poisson_regression": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 5.1507,
+            "rmse": 14.2453,
+            "poisson_deviance": 2.5846,
+            "wape": 0.2004,
+            "zero_hit_rate": 0.3177,
+            "mean_actual": 25.7064,
+            "mean_predicted": 25.6652,
+            "volume_bias": 0.9984
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 17.8942,
+            "rmse": 30.0699,
+            "poisson_deviance": 5.9289,
+            "wape": 0.1677,
+            "zero_hit_rate": 0.0,
+            "mean_actual": 106.7034,
+            "mean_predicted": 106.5892,
+            "volume_bias": 0.9989
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 3.6205,
+            "rmse": 5.6241,
+            "poisson_deviance": 2.461,
+            "wape": 0.3673,
+            "zero_hit_rate": 0.0,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.7702,
+            "volume_bias": 0.9912
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.0921,
+            "rmse": 1.7259,
+            "poisson_deviance": 1.4447,
+            "wape": 0.7024,
+            "zero_hit_rate": 0.3337,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.5516,
+            "volume_bias": 0.9979
+          }
+        ],
+        "gbm_poisson": [
+          {
+            "tier": "all",
+            "n": 290346,
+            "mae": 4.6702,
+            "rmse": 13.1622,
+            "poisson_deviance": 2.1887,
+            "wape": 0.1817,
+            "zero_hit_rate": 0.4319,
+            "mean_actual": 25.7064,
+            "mean_predicted": 25.3913,
+            "volume_bias": 0.9877
+          },
+          {
+            "tier": "high",
+            "n": 62886,
+            "mae": 16.0177,
+            "rmse": 27.7632,
+            "poisson_deviance": 4.6383,
+            "wape": 0.1501,
+            "zero_hit_rate": 0.0222,
+            "mean_actual": 106.7034,
+            "mean_predicted": 105.4011,
+            "volume_bias": 0.9878
+          },
+          {
+            "tier": "medium",
+            "n": 48168,
+            "mae": 3.3888,
+            "rmse": 5.2948,
+            "poisson_deviance": 2.1894,
+            "wape": 0.3438,
+            "zero_hit_rate": 0.1189,
+            "mean_actual": 9.8572,
+            "mean_predicted": 9.601,
+            "volume_bias": 0.974
+          },
+          {
+            "tier": "low",
+            "n": 179292,
+            "mae": 1.0343,
+            "rmse": 1.6319,
+            "poisson_deviance": 1.3293,
+            "wape": 0.6652,
+            "zero_hit_rate": 0.4485,
+            "mean_actual": 1.5549,
+            "mean_predicted": 1.5704,
+            "volume_bias": 1.0099
+          }
+        ]
+      },
+      "gate": {
+        "horizon_hours": 6,
+        "metric": "poisson_deviance",
+        "passed": true,
+        "ships": "gbm_poisson",
+        "improvements": {
+          "all": 0.5775,
+          "high": 0.3504,
+          "medium": 0.3583,
+          "low": 0.7324
+        },
+        "bias_violations": [],
+        "degradations": [],
+        "reasons": [
+          "champion clears the gate on high, medium with no bias violation or tier degradation"
+        ]
+      }
+    }
+  }
+}

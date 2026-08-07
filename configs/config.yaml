@@ -91,6 +91,10 @@ gates:
   max_volume_bias_deviation: 0.05
   # No tier may get materially worse than the benchmark it replaces.
   max_tier_degradation: 0.10
+  # Spec §8 gate 4: a 90% interval must cover 85-95% on the gated tiers.
+  # The low tier is reported but not gated — demand there is mostly zero, so a
+  # lower bound of zero covers trivially and the figure says little.
+  coverage_tolerance: 0.05
 
 validation:
   # Rows failing any rule are quarantined with a reason code and counted; they are

@@ -71,6 +71,7 @@ class GatesConfig(BaseModel):
     gated_tiers: list[str]
     max_volume_bias_deviation: float = Field(gt=0)
     max_tier_degradation: float = Field(gt=0)
+    coverage_tolerance: float = Field(gt=0)
 
     @field_validator("metric")
     @classmethod
