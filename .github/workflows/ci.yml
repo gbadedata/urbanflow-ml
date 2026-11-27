@@ -48,6 +48,12 @@ jobs:
       - name: Create placeholder model directory
         run: mkdir -p models && touch models/.gitkeep
 
+      # The gha cache backend needs a buildx builder that supports cache
+      # export; the runner's default "docker" driver does not, which made
+      # every build fail with "Cache export is not supported".
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build image
         uses: docker/build-push-action@v6
         with:
